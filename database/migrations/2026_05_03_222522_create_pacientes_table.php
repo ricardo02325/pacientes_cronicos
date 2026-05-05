@@ -23,7 +23,8 @@ return new class extends Migration
                 ->cascadeOnUpdate();
 
             $table->date('fecha_nacimiento');
-            $table->string('telefono_emergencia', 20)->nullable();
+            $table->string('telefono_emergencia', 20);
+            $table->string('sexo', 10);
             $table->string('diagnostico_principal', 255);
 
             $table->enum('nivel_riesgo', ['Bajo', 'Medio', 'Alto'])
