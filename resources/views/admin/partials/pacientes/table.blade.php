@@ -1,6 +1,7 @@
 <!-- Patient Table -->
 <div class="patient-card">
     <table class="table">
+
         <thead class="table-header">
             <tr class="table-header-row">
                 <th>PACIENTE</th>
@@ -11,119 +12,81 @@
                 <th>ACCIONES</th>
             </tr>
         </thead>
+
         <tbody>
-            <tr class="table-row">
-                <td>
-                    <div class="patient-info">
-                        <div class="avatar">M</div>
-                        <div class="patient-details">
-                            <h4>Miguel Ángel Ortiz</h4>
-                            <p>75 años · Masculino</p>
+
+            @foreach ($pacientes as $paciente)
+                <tr class="table-row">
+
+                    <!-- PACIENTE -->
+                    <td>
+                        <div class="patient-info">
+
+                            <div class="avatar">
+                                {{ strtoupper(substr($paciente->nombre_completo, 0, 1)) }}
+                            </div>
+
+                            <div class="patient-details">
+
+                                <h4>
+                                    {{ $paciente->nombre_completo }}
+                                </h4>
+
+                                <p>
+                                    {{ \Carbon\Carbon::parse($paciente->fecha_nacimiento)->age }} años ·
+                                    {{ ucfirst($paciente->sexo) }}
+                                </p>
+                            </div>
+
                         </div>
-                    </div>
-                </td>
-                <td>Enfermedad Renal</td>
-                <td><span class="status-badge status-critico">Crítico</span></td>
-                <td>01 may 2026</td>
-                <td>05 may 2026</td>
-                <td><span class="actions-icon">&#10247;</span></td>
-            </tr>
-            <tr class="table-row">
-                <td>
-                    <div class="patient-info">
-                        <div class="avatar">M</div>
-                        <div class="patient-details">
-                            <h4>María García López</h4>
-                            <p>58 años · Femenino</p>
+                    </td>
+
+                    <!-- CONDICIÓN -->
+                    <td>
+                        {{ $paciente->diagnostico_principal }}
+                    </td>
+
+                    <!-- ESTADO -->
+                    <td>
+                        <span class="status-badge status-tratamiento">
+                            {{ $paciente->estado }}
+                        </span>
+                    </td>
+
+                    <!-- DATOS FIJOS -->
+                    <td>01 may 2026</td>
+
+                    <td>15 may 2026</td>
+
+                    <!-- ACCIONES -->
+                    <td class="actions-cell">
+
+                        <button class="actions-btn">
+                            &#10247;
+                        </button>
+
+                        <div class="actions-menu hidden">
+
+                            <button class="dropdown-item">
+                                Ver más
+                            </button>
+
+                            <button class="dropdown-item edit-btn">
+                                Editar
+                            </button>
+
+                            <button class="dropdown-item delete-item" data-id="{{ $paciente->id }}">
+                                Eliminar
+                            </button>
+
                         </div>
-                    </div>
-                </td>
-                <td>Diabetes</td>
-                <td><span class="status-badge status-tratamiento">En Tratamiento</span></td>
-                <td>19 abr 2026</td>
-                <td>09 may 2026</td>
-                <td><span class="actions-icon">&#10247;</span></td>
-            </tr>
-            <tr class="table-row">
-                <td>
-                    <div class="patient-info">
-                        <div class="avatar">C</div>
-                        <div class="patient-details">
-                            <h4>Carlos Rodríguez Martínez</h4>
-                            <p>67 años · Masculino</p>
-                        </div>
-                    </div>
-                </td>
-                <td>Hipertensión</td>
-                <td><span class="status-badge status-estable">Estable</span></td>
-                <td>14 abr 2026</td>
-                <td>14 may 2026</td>
-                <td><span class="actions-icon">&#10247;</span></td>
-            </tr>
-            <tr class="table-row">
-                <td>
-                    <div class="patient-info">
-                        <div class="avatar">A</div>
-                        <div class="patient-details">
-                            <h4>Ana Fernández Ruiz</h4>
-                            <p>45 años · Femenino</p>
-                        </div>
-                    </div>
-                </td>
-                <td>Asma</td>
-                <td><span class="status-badge status-estable">Estable</span></td>
-                <td>27 abr 2026</td>
-                <td>31 may 2026</td>
-                <td><span class="actions-icon">&#10247;</span></td>
-            </tr>
-            <tr class="table-row">
-                <td>
-                    <div class="patient-info">
-                        <div class="avatar">R</div>
-                        <div class="patient-details">
-                            <h4>Roberto Hernández Díaz</h4>
-                            <p>72 años · Masculino</p>
-                        </div>
-                    </div>
-                </td>
-                <td>Insuficiencia Cardíaca</td>
-                <td><span class="status-badge status-critico">Crítico</span></td>
-                <td>30 abr 2026</td>
-                <td>04 may 2026</td>
-                <td><span class="actions-icon">&#10247;</span></td>
-            </tr>
-            <tr class="table-row">
-                <td>
-                    <div class="patient-info">
-                        <div class="avatar">L</div>
-                        <div class="patient-details">
-                            <h4>Laura Sánchez Morales</h4>
-                            <p>53 años · Femenino</p>
-                        </div>
-                    </div>
-                </td>
-                <td>EPOC</td>
-                <td><span class="status-badge status-observacion">En Observación</span></td>
-                <td>09 abr 2026</td>
-                <td>07 may 2026</td>
-                <td><span class="actions-icon">&#10247;</span></td>
-            </tr>
-            <tr class="table-row">
-                <td>
-                    <div class="patient-info">
-                        <div class="avatar">P</div>
-                        <div class="patient-details">
-                            <h4>Pedro Jiménez Torres</h4>
-                            <p>61 años · Masculino</p>
-                        </div>
-                    </div>
-                </td>
-                <td>Diabetes</td>
-                <td><span class="status-badge status-tratamiento">En Tratamiento</span></td>
-                <td>24 abr 2026</td>
-                <td>19 may 2026</td>
-                <td><span class="actions-icon">&#10247;</span></td>
-            </tr>
+
+                    </td>
+
+                </tr>
+            @endforeach
+
         </tbody>
+
     </table>
 </div>

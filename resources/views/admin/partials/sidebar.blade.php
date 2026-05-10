@@ -22,10 +22,6 @@
             class="nav-item {{ request()->routeIs('admin.medicos*') ? 'active' : '' }}">
             <i class="fa-solid fa-user-doctor"></i> Médicos
         </a>
-
-        <a href="{{ route('admin.citas') }}" class="nav-item {{ request()->routeIs('admin.citas*') ? 'active' : '' }}">
-            <i class="fa-regular fa-calendar-days"></i> Citas
-        </a>
         <a href="#" class="nav-item logout">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
         </a>

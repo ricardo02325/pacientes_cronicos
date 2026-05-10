@@ -1,9 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
 use App\Models\TotalPacientes;
 use App\Models\TotalPacientesRiesgoAlto;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PacientesController;
+use App\Http\Controllers\UsuarioController;
 
 Route::get('/', function () {
     $totalPacientes = TotalPacientes::value('total');
@@ -18,14 +20,11 @@ Route::get('/', function () {
     ));
 })->name('admin.dashboard');
 
-Route::get('/pacientes', function () {
-    return view('admin.pacientes');
-})->name('admin.pacientes');
+Route::get('/pacientes', [PacientesController::class, 'index'])
+    ->name('admin.pacientes');
 
 Route::get('/medicos', function () {
     return view('admin.medicos');
 })->name('admin.medicos');
 
-Route::get('/citas', function () {
-    return view('admin.citas');
-})->name('admin.citas');
+Route::put('/usuarios/{id}/estado', [UsuarioController::class, 'cambiarEstado']);

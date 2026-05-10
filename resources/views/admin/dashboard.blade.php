@@ -15,4 +15,10 @@
         @include('admin.partials.dashboard.chart')
     </div>
 
+    @include('admin.partials.pacientes.modal_editar')
+
+    @push('scripts')
+        @vite('resources/js/admin/dashboard.js')
+    @endpush
+
 @endsection

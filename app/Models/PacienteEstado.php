@@ -8,8 +8,7 @@ class PacienteEstado extends Model
 {
     protected $table = 'pacientes_estado';
 
-    public $timestamps = false; // la vista no maneja timestamps
-
+    public $timestamps = false;
     protected $fillable = [
         'nombre_completo',
         'diagnostico_principal',

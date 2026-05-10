@@ -47,8 +47,29 @@
                     <td class="date-cell">01 may<br>2026</td>
                     <td class="date-cell">05 may<br>2026</td>
 
-                    <td class="actions">
-                        <i class="fa-solid fa-ellipsis"></i>
+                    <!-- ACCIONES -->
+                    <td class="actions-cell">
+
+                        <button class="actions-btn">
+                            &#10247;
+                        </button>
+
+                        <div class="actions-menu hidden">
+
+                            <button class="dropdown-item">
+                                Ver más
+                            </button>
+
+                            <button class="dropdown-item edit-btn">
+                                Editar
+                            </button>
+
+                            <button class="dropdown-item delete-item">
+                                Eliminar
+                            </button>
+
+                        </div>
+
                     </td>
                 </tr>
             @endforeach

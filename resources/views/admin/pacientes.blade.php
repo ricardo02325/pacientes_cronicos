@@ -14,6 +14,10 @@
 
     @include('admin.partials.pacientes.modal')
 
+    @include('admin.partials.pacientes.modal_editar')
+
+    @include('admin.partials.pacientes.modal_eliminar')
+
 @endsection
 
 @push('scripts')

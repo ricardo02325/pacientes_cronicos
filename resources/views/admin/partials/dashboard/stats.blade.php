@@ -31,15 +31,4 @@
             <i class="fa-solid fa-heart-pulse"></i>
         </div>
     </div>
-
-    <div class="stat-card">
-        <div class="stat-info">
-            <h3>Citas Próximas</h3>
-            <div class="number">8</div>
-            <p>Pendientes</p>
-        </div>
-        <div class="stat-icon icon-purple">
-            <i class="fa-regular fa-calendar-check"></i>
-        </div>
-    </div>
 </div>

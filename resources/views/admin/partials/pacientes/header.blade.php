@@ -6,8 +6,9 @@
 
     <div class="header-actions">
         <div class="search-bar">
-            <span class="search-icon">&#128269;</span>
-            <input type="text" class="search-input" placeholder="Buscar por nombre, condición o estado...">
+            <span class="search-icon">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span> <input type="text" class="search-input" placeholder="Buscar por nombre, condición o estado...">
         </div>
 
         <button id="addPatientBtn" class="new-patient-btn">
