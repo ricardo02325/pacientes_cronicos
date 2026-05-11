@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PacientesController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\DoctorController;
 
 Route::get('/', function () {
     $totalPacientes = TotalPacientes::value('total');
@@ -23,8 +24,11 @@ Route::get('/', function () {
 Route::get('/pacientes', [PacientesController::class, 'index'])
     ->name('admin.pacientes');
 
-Route::get('/medicos', function () {
-    return view('admin.medicos');
-})->name('admin.medicos');
+// Rutas para gestión de médicos
+Route::get('/medicos', [DoctorController::class, 'index'])
+    ->name('admin.medicos');
 
 Route::put('/usuarios/{id}/estado', [UsuarioController::class, 'cambiarEstado']);
+
+Route::post('/medicos/registrar', [DoctorController::class, 'store'])
+    ->name('medicos.store');

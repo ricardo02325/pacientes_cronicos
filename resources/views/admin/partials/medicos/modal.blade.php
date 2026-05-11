@@ -15,7 +15,9 @@
         </div>
 
         <!-- FORMULARIO -->
-        <form id="doctorForm" autocomplete="off">
+        <form id="doctorForm" action="{{ route('medicos.store') }}" method="POST">
+
+            @csrf
 
             <div class="form-grid">
 
@@ -71,7 +73,7 @@
                     </label>
 
                     <input type="email" id="email" name="email" class="form-control"
-                        placeholder="Correo Electrónico" maxlength="50" required>
+                        placeholder="Correo Electrónico (obligatorio)" maxlength="50" required>
                 </div>
 
                 <!-- TELÉFONO -->
@@ -81,8 +83,8 @@
                         Teléfono *
                     </label>
 
-                    <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="Teléfono"
-                        maxlength="10" pattern="[0-9]{10}" required>
+                    <input type="tel" id="telefono" name="telefono" class="form-control"
+                        placeholder="Teléfono (obligatorio)" maxlength="10" pattern="[0-9]{10}" required>
                 </div>
 
                 <!-- PASSWORD -->
@@ -92,8 +94,9 @@
                         Contraseña *
                     </label>
 
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña"
-                        minlength="8" maxlength="255" required>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Contraseña (obligatorio)" minlength="8" maxlength="255" required
+                        autocomplete="off">
                 </div>
 
                 <!-- CÉDULA -->
@@ -104,7 +107,7 @@
                     </label>
 
                     <input type="text" id="cedula_profesional" name="cedula_profesional" class="form-control"
-                        placeholder="Cédula Profesional" maxlength="30" required>
+                        placeholder="Cédula Profesional (obligatorio)" maxlength="30" required>
                 </div>
 
                 <!-- TURNO -->
@@ -115,7 +118,7 @@
                     </label>
 
                     <select id="turno" name="turno" class="form-control" required>
-                        <option value="">
+                        <option value="" selected disabled hidden>
                             Seleccionar
                         </option>
 
@@ -145,7 +148,7 @@
                     </label>
 
                     <select id="especialidad" name="especialidad" class="form-control" required>
-                        <option value="">
+                        <option value="" selected disabled hidden>
                             Seleccionar
                         </option>
 
@@ -185,8 +188,8 @@
                         Observaciones
                     </label>
 
-                    <textarea id="observaciones" name="observaciones" class="form-control" placeholder="Notas u observaciones..."
-                        rows="4"></textarea>
+                    <textarea id="observaciones" name="observaciones" class="form-control"
+                        placeholder="Notas u observaciones... (obligatorio)" rows="4"></textarea>
 
                 </div>
 
