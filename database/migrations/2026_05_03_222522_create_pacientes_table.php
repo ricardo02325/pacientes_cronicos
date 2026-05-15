@@ -18,7 +18,7 @@ return new class extends Migration
                 ->cascadeOnUpdate();
 
             $table->foreignId('medico_id')
-                ->constrained('usuarios')
+                ->constrained('medicos')
                 ->restrictOnDelete()
                 ->cascadeOnUpdate();
 
