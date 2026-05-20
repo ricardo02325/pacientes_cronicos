@@ -1,4 +1,13 @@
 {
+  "resources/css/admin/app.css": {
+    "file": "assets/app-BMM2Ps3U.css",
+    "src": "resources/css/admin/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
   "resources/css/admin/dashboard.css": {
     "file": "assets/dashboard-CXY_6LIB.css",
     "src": "resources/css/admin/dashboard.css",
@@ -8,19 +17,53 @@
       "dashboard.css"
     ]
   },
+  "resources/css/admin/medicos.css": {
+    "file": "assets/medicos-l0ANv07C.css",
+    "src": "resources/css/admin/medicos.css",
+    "isEntry": true,
+    "name": "medicos",
+    "names": [
+      "medicos.css"
+    ]
+  },
+  "resources/css/admin/pacientes.css": {
+    "file": "assets/pacientes-DSkmUlOs.css",
+    "src": "resources/css/admin/pacientes.css",
+    "isEntry": true,
+    "name": "pacientes",
+    "names": [
+      "pacientes.css"
+    ]
+  },
   "resources/css/app.css": {
     "file": "assets/app-Ci-aNfoe.css",
-    "src": "resources/css/app.css",
-    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/js/admin/app.js": {
+    "file": "assets/app-Bu9jTV6t.js",
     "name": "app",
-    "names": [
-      "app.css"
+    "src": "resources/js/admin/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-BMM2Ps3U.css"
     ]
   },
   "resources/js/admin/dashboard.js": {
     "file": "assets/dashboard-Cm66yGUA.js",
     "name": "dashboard",
     "src": "resources/js/admin/dashboard.js",
+    "isEntry": true
+  },
+  "resources/js/admin/medicos.js": {
+    "file": "assets/medicos-C3JEn7q_.js",
+    "name": "medicos",
+    "src": "resources/js/admin/medicos.js",
+    "isEntry": true
+  },
+  "resources/js/admin/pacientes.js": {
+    "file": "assets/pacientes-B5k3jp3C.js",
+    "name": "pacientes",
+    "src": "resources/js/admin/pacientes.js",
     "isEntry": true
   },
   "resources/js/app.js": {
