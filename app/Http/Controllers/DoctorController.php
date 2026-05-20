@@ -15,6 +15,7 @@ class DoctorController extends Controller
         return view('admin.medicos', compact('medicos'));
     }
 
+    // Método para mostrar el formulario de registro de médico
     public function store(Request $request)
     {
         $request->validate([
