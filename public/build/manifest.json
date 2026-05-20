@@ -1,4 +1,13 @@
 {
+  "resources/css/admin/dashboard.css": {
+    "file": "assets/dashboard-CXY_6LIB.css",
+    "src": "resources/css/admin/dashboard.css",
+    "isEntry": true,
+    "name": "dashboard",
+    "names": [
+      "dashboard.css"
+    ]
+  },
   "resources/css/app.css": {
     "file": "assets/app-Ci-aNfoe.css",
     "src": "resources/css/app.css",
@@ -7,6 +16,12 @@
     "names": [
       "app.css"
     ]
+  },
+  "resources/js/admin/dashboard.js": {
+    "file": "assets/dashboard-Cm66yGUA.js",
+    "name": "dashboard",
+    "src": "resources/js/admin/dashboard.js",
+    "isEntry": true
   },
   "resources/js/app.js": {
     "file": "assets/app-CcNNqum8.js",
