@@ -48,9 +48,13 @@
 
                     <!-- ESTADO -->
                     <td>
-                        <span class="status-badge status-tratamiento">
-                            {{ $paciente->estado }}
-                        </span>
+                        @if ($paciente->nivel_riesgo == 'Alto')
+                            <span class="badge critico">Crítico</span>
+                        @elseif($paciente->nivel_riesgo == 'Medio')
+                            <span class="badge tratamiento">En Tratamiento</span>
+                        @else
+                            <span class="badge estable">Estable</span>
+                        @endif
                     </td>
 
                     <!-- DATOS FIJOS -->

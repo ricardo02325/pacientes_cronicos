@@ -19,3 +19,34 @@ modal.addEventListener("click", (e) => {
         closeModal();
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.querySelector(".search-bar input");
+
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+
+            // TARJETAS DE MÉDICOS
+            const cards = document.querySelectorAll(".doctor-card");
+
+            cards.forEach((card) => {
+                const nombre =
+                    card
+                        .querySelector(".doctor-name")
+                        ?.textContent.toLowerCase() || "";
+
+                const especialidad =
+                    card
+                        .querySelector(".doctor-specialty")
+                        ?.textContent.toLowerCase() || "";
+
+                const coincide =
+                    nombre.includes(searchTerm) ||
+                    especialidad.includes(searchTerm);
+
+                card.style.display = coincide ? "" : "none";
+            });
+        });
+    }
+});

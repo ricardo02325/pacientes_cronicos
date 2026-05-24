@@ -11,6 +11,12 @@ SELECT COUNT(nivel_riesgo) AS total
 FROM pacientes
 WHERE nivel_riesgo = 'Alto';
 
+-- Vistas para obtener el total de pacientes por nivel de riesgo
+CREATE VIEW total_pacientes_estables AS
+SELECT COUNT(*) AS total
+FROM pacientes
+WHERE nivel_riesgo = 'Bajo';
+
 -- Vistas para obtener el total de pacientes
 CREATE VIEW pacientes_estado AS
 SELECT 
@@ -27,28 +33,23 @@ ORDER BY usuarios.created_at;
 
 -- Vista para médicos
 CREATE VIEW vista_medicos AS
-
 SELECT
-    usuarios.id,
+    usuarios.id usuario_id,
+    medicos.id medico_id,
 
     CONCAT(
         usuarios.primer_nombre,
         ' ',
         usuarios.apellido_paterno
-    ) AS nombre_completo,
+    ) nombre_completo,
 
     medicos.telefono,
-
     usuarios.email,
-
     medicos.cedula_profesional,
-
     medicos.especialidad,
-
     usuarios.estado
 
 FROM medicos
-
 INNER JOIN usuarios
     ON medicos.usuario_id = usuarios.id;
     
@@ -164,7 +165,6 @@ DELIMITER $$
 
 CREATE PROCEDURE insertar_paciente (
 
-    -- DATOS USUARIO
     IN p_primer_nombre VARCHAR(50),
     IN p_segundo_nombre VARCHAR(50),
     IN p_apellido_paterno VARCHAR(50),
@@ -172,40 +172,22 @@ CREATE PROCEDURE insertar_paciente (
     IN p_email VARCHAR(50),
     IN p_password VARCHAR(255),
 
-    -- DATOS PACIENTE
     IN p_medico_id BIGINT UNSIGNED,
     IN p_fecha_nacimiento DATE,
     IN p_telefono_emergencia VARCHAR(20),
     IN p_sexo VARCHAR(10),
     IN p_diagnostico_principal VARCHAR(255),
-    IN p_nivel_riesgo ENUM('Bajo', 'Medio', 'Alto')
+    IN p_nivel_riesgo VARCHAR(10)
 
 )
 
 BEGIN
 
-    DECLARE v_usuario_id BIGINT UNSIGNED;
-    DECLARE v_existe_email INT;
-
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
+    DECLARE v_usuario_id INT UNSIGNED;
 
     START TRANSACTION;
 
-    -- VALIDAR EMAIL DUPLICADO
-    SELECT COUNT(*)
-    INTO v_existe_email
-    FROM usuarios
-    WHERE email = p_email;
-
-    IF v_existe_email > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'El correo ya está registrado';
-    END IF;
-
-    -- INSERTAR USUARIO
+    -- Insertar usuario
     INSERT INTO usuarios (
         primer_nombre,
         segundo_nombre,
@@ -217,18 +199,17 @@ BEGIN
     )
     VALUES (
         p_primer_nombre,
-        NULLIF(TRIM(p_segundo_nombre), ''),
+        p_segundo_nombre,
         p_apellido_paterno,
         p_apellido_materno,
-        2,
+        1,
         p_email,
         SHA2(p_password, 256)
     );
 
-    -- OBTENER ID GENERADO
     SET v_usuario_id = LAST_INSERT_ID();
 
-    -- INSERTAR PACIENTE
+    -- Insertar paciente
     INSERT INTO pacientes (
         usuario_id,
         medico_id,
@@ -240,22 +221,16 @@ BEGIN
     )
     VALUES (
         v_usuario_id,
-
         p_medico_id,
-
         p_fecha_nacimiento,
-
-        NULLIF(TRIM(p_telefono_emergencia), ''),
-
-        NULLIF(TRIM(p_sexo), ''),
-
-        NULLIF(TRIM(p_diagnostico_principal), ''),
-
-        COALESCE(p_nivel_riesgo, 'Bajo')
+        p_telefono_emergencia,
+        p_sexo,
+        p_diagnostico_principal,
+        p_nivel_riesgo
     );
 
     COMMIT;
 
-END $$
+END$$
 
 DELIMITER ;

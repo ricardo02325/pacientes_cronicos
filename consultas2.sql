@@ -1,0 +1,54 @@
+CALL insertar_paciente('Juan','Carlos','Gomez','Lopez','juan1@gmail.com','123456',1,'1990-01-15','3123456701','Masculino','Diabetes','Medio');
+CALL insertar_paciente('Maria','Fernanda','Ramirez','Torres','maria2@gmail.com','123456',2,'1988-03-22','3123456702','Femenino','Hipertensión','Alto');
+CALL insertar_paciente('Luis','Alberto','Hernandez','Cruz','luis3@gmail.com','123456',1,'1995-07-11','3123456703','Masculino','Asma','Bajo');
+CALL insertar_paciente('Ana','Sofia','Martinez','Diaz','ana4@gmail.com','123456',2,'2001-09-18','3123456704','Femenino','Obesidad','Medio');
+CALL insertar_paciente('Carlos','Eduardo','Perez','Ruiz','carlos5@gmail.com','123456',1,'1987-05-05','3123456705','Masculino','Ansiedad','Bajo');
+CALL insertar_paciente('Laura','Isabel','Sanchez','Morales','laura6@gmail.com','123456',2,'1993-12-01','3123456706','Femenino','Depresión','Alto');
+CALL insertar_paciente('Miguel','Angel','Flores','Vega','miguel7@gmail.com','123456',1,'1979-06-30','3123456707','Masculino','Colesterol alto','Medio');
+CALL insertar_paciente('Daniela','Paola','Castro','Mendoza','daniela8@gmail.com','123456',2,'1998-11-12','3123456708','Femenino','Migraña','Bajo');
+CALL insertar_paciente('Jose','Manuel','Ortega','Navarro','jose9@gmail.com','123456',1,'1985-04-27','3123456709','Masculino','Artritis','Medio');
+CALL insertar_paciente('Patricia','Elena','Reyes','Silva','patricia10@gmail.com','123456',2,'1992-08-09','3123456710','Femenino','Insomnio','Bajo');
+
+CALL insertar_paciente('Ricardo','Ivan','Jimenez','Campos','ricardo11@gmail.com','123456',1,'1997-02-14','3123456711','Masculino','Gastritis','Medio');
+CALL insertar_paciente('Monica','Lizbeth','Gutierrez','Rojas','monica12@gmail.com','123456',2,'1984-10-25','3123456712','Femenino','Hipotiroidismo','Alto');
+CALL insertar_paciente('Fernando','Javier','Mora','Salas','fernando13@gmail.com','123456',1,'1999-01-03','3123456713','Masculino','Alergias','Bajo');
+CALL insertar_paciente('Gabriela','Andrea','Vargas','Nuñez','gabriela14@gmail.com','123456',2,'1991-07-19','3123456714','Femenino','Diabetes tipo 1','Alto');
+CALL insertar_paciente('Oscar','Daniel','Medina','Paz','oscar15@gmail.com','123456',1,'1980-09-07','3123456715','Masculino','Hipertensión','Medio');
+CALL insertar_paciente('Cecilia','Mariana','Delgado','Ibarra','cecilia16@gmail.com','123456',2,'2000-06-16','3123456716','Femenino','Anemia','Bajo');
+CALL insertar_paciente('Jorge','Luis','Cortes','Mejia','jorge17@gmail.com','123456',1,'1994-12-20','3123456717','Masculino','Estrés','Bajo');
+CALL insertar_paciente('Natalia','Guadalupe','Rios','Campos','natalia18@gmail.com','123456',2,'1986-11-02','3123456718','Femenino','Epilepsia','Alto');
+CALL insertar_paciente('Raul','Antonio','Acosta','Vazquez','raul19@gmail.com','123456',1,'1978-03-08','3123456719','Masculino','Cardiopatía','Alto');
+CALL insertar_paciente('Veronica','Lucia','Leon','Ortega','veronica20@gmail.com','123456',2,'1996-05-29','3123456720','Femenino','Asma','Medio');
+
+CALL insertar_paciente('Hector','Miguel','Pineda','Lara','hector21@gmail.com','123456',1,'1983-08-14','3123456721','Masculino','Bronquitis','Medio');
+CALL insertar_paciente('Alejandra','Sarai','Fuentes','Carrillo','ale22@gmail.com','123456',2,'1990-04-12','3123456722','Femenino','Migraña','Bajo');
+CALL insertar_paciente('Mario','Andres','Valdez','Soto','mario23@gmail.com','123456',1,'1992-01-25','3123456723','Masculino','Obesidad','Alto');
+CALL insertar_paciente('Rosa','Elvira','Peña','Lozano','rosa24@gmail.com','123456',2,'1989-09-10','3123456724','Femenino','Artritis','Medio');
+CALL insertar_paciente('Emilio','Rafael','Mendez','Cano','emilio25@gmail.com','123456',1,'2002-02-17','3123456725','Masculino','Ansiedad','Bajo');
+CALL insertar_paciente('Claudia','Patricia','Espinoza','Nieto','claudia26@gmail.com','123456',2,'1977-12-06','3123456726','Femenino','Hipertensión','Alto');
+CALL insertar_paciente('Sergio','David','Campos','Renteria','sergio27@gmail.com','123456',1,'1993-10-15','3123456727','Masculino','Diabetes tipo 2','Medio');
+CALL insertar_paciente('Liliana','Monserrat','Galvez','Mata','lili28@gmail.com','123456',2,'1985-07-27','3123456728','Femenino','Gastritis','Bajo');
+CALL insertar_paciente('Victor','Hugo','Salazar','Rico','victor29@gmail.com','123456',1,'1998-11-09','3123456729','Masculino','Insomnio','Bajo');
+CALL insertar_paciente('Paola','Andrea','Cervantes','Ponce','paola30@gmail.com','123456',2,'1991-06-04','3123456730','Femenino','Depresión','Alto');
+
+CALL insertar_paciente('Alberto','Isaac','Robles','Trejo','alberto31@gmail.com','123456',1,'1988-08-18','3123456731','Masculino','Asma','Medio');
+CALL insertar_paciente('Karina','Estefania','Miranda','Beltran','karina32@gmail.com','123456',2,'1997-03-23','3123456732','Femenino','Hipotiroidismo','Medio');
+CALL insertar_paciente('Eduardo','Jesus','Montes','Cisneros','eduardo33@gmail.com','123456',1,'1981-05-30','3123456733','Masculino','Cardiopatía','Alto');
+CALL insertar_paciente('Camila','Fernanda','Velasco','Parra','camila34@gmail.com','123456',2,'2000-01-11','3123456734','Femenino','Estrés','Bajo');
+CALL insertar_paciente('Ruben','Antonio','Solano','Bravo','ruben35@gmail.com','123456',1,'1994-04-01','3123456735','Masculino','Colesterol alto','Medio');
+CALL insertar_paciente('Andrea','Nicole','Padilla','Ayala','andrea36@gmail.com','123456',2,'1995-09-19','3123456736','Femenino','Migraña','Bajo');
+CALL insertar_paciente('Tomas','Felipe','Arias','Benitez','tomas37@gmail.com','123456',1,'1982-02-08','3123456737','Masculino','Hipertensión','Alto');
+CALL insertar_paciente('Lucero','Beatriz','Molina','Escobar','lucero38@gmail.com','123456',2,'1996-12-28','3123456738','Femenino','Anemia','Bajo');
+CALL insertar_paciente('Arturo','Elias','Rosales','Tapia','arturo39@gmail.com','123456',1,'1976-06-21','3123456739','Masculino','Artritis','Medio');
+CALL insertar_paciente('Brenda','Yamileth','Avila','Correa','brenda40@gmail.com','123456',2,'1993-08-03','3123456740','Femenino','Depresión','Alto');
+
+CALL insertar_paciente('Ivan','Noel','Cuevas','Macias','ivan41@gmail.com','123456',1,'1989-11-14','3123456741','Masculino','Gastritis','Bajo');
+CALL insertar_paciente('Erika','Daniela','Camacho','Serrano','erika42@gmail.com','123456',2,'1990-05-07','3123456742','Femenino','Diabetes tipo 1','Alto');
+CALL insertar_paciente('Gerardo','Ulises','Valencia','Ochoa','gerardo43@gmail.com','123456',1,'1984-03-16','3123456743','Masculino','Bronquitis','Medio');
+CALL insertar_paciente('Mariana','Aleli','Santana','Rea','mariana44@gmail.com','123456',2,'1998-10-20','3123456744','Femenino','Asma','Bajo');
+CALL insertar_paciente('Saul','Enrique','Rangel','Mora','saul45@gmail.com','123456',1,'1979-07-01','3123456745','Masculino','Hipertensión','Alto');
+CALL insertar_paciente('Diana','Paola','Olvera','Zamora','diana46@gmail.com','123456',2,'2001-01-09','3123456746','Femenino','Ansiedad','Medio');
+CALL insertar_paciente('Felipe','Martin','Castañeda','Del Valle','felipe47@gmail.com','123456',1,'1992-04-13','3123456747','Masculino','Obesidad','Alto');
+CALL insertar_paciente('Yessica','Maribel','Treviño','Bustos','yessica48@gmail.com','123456',2,'1995-02-22','3123456748','Femenino','Migraña','Bajo');
+CALL insertar_paciente('Diego','Armando','Guerrero','Lemus','diego49@gmail.com','123456',1,'1986-09-05','3123456749','Masculino','Insomnio','Bajo');
+CALL insertar_paciente('Sandra','Ivonne','Nava','Peralta','sandra50@gmail.com','123456',2,'1983-11-17','3123456750','Femenino','Epilepsia','Alto');

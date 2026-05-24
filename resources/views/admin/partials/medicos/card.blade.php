@@ -12,11 +12,11 @@
 
         <div class="doctor-info">
 
-            <h3>
+            <h3 class="doctor-name">
                 {{ $medico->nombre_completo }}
             </h3>
 
-            <span class="badge badge-specialty">
+            <span class="badge badge-specialty doctor-specialty">
                 {{ $medico->especialidad }}
             </span>
 

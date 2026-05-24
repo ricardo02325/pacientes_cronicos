@@ -1,9 +1,9 @@
 <div class="header">
     <div class="page-title">
         <h1>Médicos</h1>
-        <p>1 médicos registrados</p>
+        <p>{{ $totalMedicos }} médicos registrados</p>
     </div>
-    
+
     <div class="actions">
         <div class="search-bar">
             <i class="fa-solid fa-magnifying-glass"></i>

@@ -18,6 +18,9 @@
     @include('admin.partials.pacientes.modal_editar')
 
     @push('scripts')
+        <script>
+            window.condicionesChart = @json($condiciones);
+        </script>
         @vite('resources/js/admin/dashboard.js')
     @endpush
 

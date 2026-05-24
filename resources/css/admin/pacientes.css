@@ -728,3 +728,40 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+
+/* =========================
+   BADGES ESTADO PACIENTE
+========================= */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 12px;
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    min-width: 120px;
+    text-align: center;
+}
+
+/* ESTABLE */
+.badge.estable {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+/* EN TRATAMIENTO */
+.badge.tratamiento {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+/* CRÍTICO */
+.badge.critico {
+    background-color: #fee2e2;
+    color: #dc2626;
+}

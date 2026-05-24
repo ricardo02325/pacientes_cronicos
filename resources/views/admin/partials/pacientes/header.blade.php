@@ -1,7 +1,9 @@
 <div class="header">
-    <div class="title-group">
-        <h1>Pacientes</h1>
-        <p>8 pacientes registrados</p>
+    <div class="header">
+        <div class="title-group">
+            <h1>Pacientes</h1>
+            <p>{{ $totalPacientes }} pacientes registrados</p>
+        </div>
     </div>
 
     <div class="header-actions">

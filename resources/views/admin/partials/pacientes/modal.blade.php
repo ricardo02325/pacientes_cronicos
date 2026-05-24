@@ -16,7 +16,8 @@
         </div>
 
         <!-- FORM -->
-        <form id="patientForm">
+        <form id="patientForm" method="POST" action="{{ route('pacientes.store') }}">
+            @csrf
 
             <div class="modal-form">
 
@@ -154,52 +155,34 @@
 
                 </div>
 
-                <!-- PASSWORD Y MÉDICO -->
+                <!-- MÉDICO Y NIVEL DE RIESGO -->
                 <div class="form-row">
-
-                    <!-- PASSWORD -->
-                    <div class="form-group-half">
-
-                        <label class="modal-label" for="password">
-                            Contraseña *
-                        </label>
-
-                        <input type="password" id="password" name="password" class="modal-input"
-                            placeholder="Mínimo 8 caracteres" minlength="8" maxlength="255"
-                            autocomplete="new-password" required>
-
-                    </div>
 
                     <!-- MÉDICO -->
                     <div class="form-group-half">
 
-                        <label class="modal-label" for="medico_id">
+                        <label class="modal-label" for="medico_search">
                             Médico Responsable *
                         </label>
 
-                        <select id="medico_id" name="medico_id" class="modal-select" required>
+                        <!-- BUSCADOR -->
+                        <input type="text" id="medico_search" class="modal-input" list="lista_medicos"
+                            placeholder="Buscar médico por nombre..." autocomplete="off" required>
 
-                            <option value="" selected disabled hidden>
-                                Seleccionar Médico
-                            </option>
+                        <!-- LISTA -->
+                        <datalist id="lista_medicos">
+                            @foreach ($medicos as $medico)
+                                <option data-id="{{ $medico->medico_id }}" value="{{ $medico->nombre_completo }}">
+                                </option>
+                            @endforeach
+                        </datalist>
 
-                            <option value="1">
-                                Dr. Juan Pérez
-                            </option>
-
-                            <option value="2">
-                                Dra. María López
-                            </option>
-
-                        </select>
+                        <!-- INPUT OCULTO -->
+                        <input type="hidden" id="medico_id" name="medico_id">
 
                     </div>
 
-                </div>
-
-                <!-- NIVEL DE RIESGO -->
-                <div class="form-row">
-
+                    <!-- NIVEL DE RIESGO -->
                     <div class="form-group-half">
 
                         <label class="modal-label" for="nivel_riesgo">

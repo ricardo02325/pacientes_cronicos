@@ -10,12 +10,19 @@ class DoctorController extends Controller
 {
     public function index()
     {
+        // TOTAL DE MÉDICOS
+        $totalMedicos = DB::table('medicos')->count();
+
+        // LISTA DE MÉDICOS
         $medicos = DB::table('vista_medicos')->get();
 
-        return view('admin.medicos', compact('medicos'));
+        return view('admin.medicos', compact(
+            'medicos',
+            'totalMedicos'
+        ));
     }
 
-    // Método para mostrar el formulario de registro de médico
+    // Método para registrar médico
     public function store(Request $request)
     {
         $request->validate([
