@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->string('telefono_emergencia', 20);
             $table->string('sexo', 10);
+            $table->decimal('estatura', 3, 2);
             $table->string('diagnostico_principal', 255);
 
             $table->enum('nivel_riesgo', ['Bajo', 'Medio', 'Alto'])
