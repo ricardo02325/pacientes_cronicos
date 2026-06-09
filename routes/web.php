@@ -6,45 +6,71 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PacientesController;
+use App\Http\Controllers\PacienteController;
+use App\Http\Controllers\ProfileController;
 
-Route::get('/', [DashboardController::class, 'index'])
-    ->name('admin.dashboard');
+require __DIR__.'/auth.php';
 
-Route::get('/pacientes', [PacientesController::class, 'index'])
-    ->name('admin.pacientes');
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
-Route::post('/pacientes', [PacientesController::class, 'store'])
-    ->name('pacientes.store');
+Route::middleware('auth')->group(function () {
 
-Route::get('/medicos', [DoctorController::class, 'index'])
-    ->name('admin.medicos');
-
-Route::put('/usuarios/{id}/estado', [UsuarioController::class, 'cambiarEstado']);
-
-Route::post('/medicos/registrar', [DoctorController::class, 'store'])
-    ->name('medicos.store');
-
-Route::prefix('medico')->name('medico.')->group(function () {
-    
-    // 1. Dashboard Principal / Inicio
-    // Actúa como el "home" redirigiendo directamente a la vista de pacientes
-    Route::get('/', function () {
-        return redirect()->route('medico.pacientes.index'); 
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
     })->name('dashboard');
 
-    // 2. Listado de "Mis Pacientes"
-    // Conectado al controlador para traer estadísticas y listado real
-    Route::get('/pacientes', [PacienteController::class, 'index'])->name('pacientes.index');
+    Route::get('/admin', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
 
-    // 3. Monitoreo de un Paciente Específico
-    Route::get('/pacientes/{id}', [PacienteController::class, 'show'])->name('pacientes.show');
+    Route::get('/pacientes', [PacientesController::class, 'index'])
+        ->name('admin.pacientes');
 
-    Route::get('/pacientes/{id}/exportar-pdf', [PacienteController::class, 'exportPDF'])->name('pacientes.exportPdf');
+    Route::post('/pacientes', [PacientesController::class, 'store'])
+        ->name('pacientes.store');
 
-    // 4. Reportes (Placeholder para futuro desarrollo)
-    Route::get('/reportes', function () {
-        return view('medico.reportes');
-    })->name('reportes');
+    Route::get('/medicos', [DoctorController::class, 'index'])
+        ->name('admin.medicos');
 
-})
-;
+    Route::post('/medicos/registrar', [DoctorController::class, 'store'])
+        ->name('medicos.store');
+
+    Route::put('/usuarios/{id}/estado', [UsuarioController::class, 'cambiarEstado']);
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
+});
+
+Route::prefix('medico')
+    ->name('medico.')
+    ->middleware('auth')
+    ->group(function () {
+
+        Route::get('/', function () {
+            return redirect()->route('medico.pacientes.index');
+        })->name('dashboard');
+
+        Route::get('/pacientes', [PacienteController::class, 'index'])
+            ->name('pacientes.index');
+
+        Route::get('/pacientes/{id}', [PacienteController::class, 'show'])
+            ->name('pacientes.show');
+
+        Route::get('/pacientes/{id}/exportar-pdf', [PacienteController::class, 'exportPDF'])
+            ->name('pacientes.exportPdf');
+
+        Route::get('/reportes', function () {
+            return view('medico.reportes');
+        })->name('reportes');
+});
+
+Route::fallback(function () {
+    return redirect()->route('login');
+});

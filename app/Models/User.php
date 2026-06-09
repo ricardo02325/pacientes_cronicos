@@ -2,48 +2,59 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $table = 'usuarios';
+
     protected $fillable = [
-        'name',
+        'primer_nombre',
+        'segundo_nombre',
+        'apellido_paterno',
+        'apellido_materno',
+        'rol_id',
         'email',
-        'password',
+        'password_hash',
+        'estado',
+        'ultimo_acceso',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password_hash',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'ultimo_acceso' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Indica a Laravel qué campo contiene la contraseña.
+     */
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+    /**
+     * Nombre completo del usuario.
+     */
+    public function getNombreCompletoAttribute()
+    {
+        return trim(
+            $this->primer_nombre . ' ' .
+            ($this->segundo_nombre ?? '') . ' ' .
+            $this->apellido_paterno . ' ' .
+            $this->apellido_materno
+        );
     }
 }

@@ -2,16 +2,46 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Usuario extends Authenticatable
 {
-    protected $table = 'usuarios'; // Apunta a tu tabla personalizada
-    
-    // Un usuario (médico) tiene muchos pacientes asignados
-    public function pacientesAsignados()
+    protected $table = 'usuarios';
+
+    protected $fillable = [
+        'primer_nombre',
+        'segundo_nombre',
+        'apellido_paterno',
+        'apellido_materno',
+        'rol_id',
+        'email',
+        'password',
+        'estado',
+        'ultimo_acceso',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'ultimo_acceso' => 'datetime',
+    ];
+
+    public function pacientesAsignados(): HasMany
     {
         return $this->hasMany(Paciente::class, 'medico_id');
+    }
+
+    public function getNombreCompletoAttribute(): string
+    {
+        return trim(
+            $this->primer_nombre . ' ' .
+            ($this->segundo_nombre ?? '') . ' ' .
+            $this->apellido_paterno . ' ' .
+            $this->apellido_materno
+        );
     }
 }

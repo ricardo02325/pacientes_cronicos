@@ -22,8 +22,13 @@
             class="nav-item {{ request()->routeIs('admin.medicos*') ? 'active' : '' }}">
             <i class="fa-solid fa-user-doctor"></i> Médicos
         </a>
-        <a href="#" class="nav-item logout">
+        <a href="{{ route('logout') }}" class="nav-item logout"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
         </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
     </nav>
 </aside>

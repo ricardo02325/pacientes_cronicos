@@ -38,8 +38,7 @@ SELECT
     medicos.id medico_id,
 
     CONCAT(
-        usuarios.primer_nombre,
-        ' ',
+        usuarios.primer_nombre,' ',
         usuarios.apellido_paterno
     ) nombre_completo,
 
@@ -94,7 +93,7 @@ CREATE PROCEDURE sp_registrar_medico(
     IN p_apellido_materno VARCHAR(50),
     IN p_rol_id BIGINT,
     IN p_email VARCHAR(50),
-    IN p_password_hash VARCHAR(255),
+    IN p_password VARCHAR(255),
 
     -- DATOS MÉDICO
     IN p_cedula_profesional VARCHAR(30),
@@ -119,7 +118,7 @@ BEGIN
         apellido_materno,
         rol_id,
         email,
-        password_hash
+        password
     )
     VALUES (
         p_primer_nombre,
@@ -128,7 +127,7 @@ BEGIN
         p_apellido_materno,
         p_rol_id,
         p_email,
-        p_password_hash
+        p_password
     );
 
     -- OBTENER EL ID GENERADO
@@ -195,7 +194,7 @@ BEGIN
         apellido_materno,
         rol_id,
         email,
-        password_hash
+        password
     )
     VALUES (
         p_primer_nombre,

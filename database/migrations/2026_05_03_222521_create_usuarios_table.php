@@ -22,7 +22,7 @@ return new class extends Migration
                 ->cascadeOnUpdate();
 
             $table->string('email', 50)->unique();
-            $table->string('password_hash', 255);
+            $table->string('password', 255);
 
             $table->enum('estado', ['Activo', 'Inactivo'])->default('Activo');
             $table->timestamp('ultimo_acceso')->nullable();
