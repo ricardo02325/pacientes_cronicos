@@ -34,6 +34,10 @@
         const dataValues = @json($chartData);
         const metricaNombre = "{{ $metricaSeleccionada->nombre }}";
 
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(37, 99, 235, 0.22)');
+        gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -41,27 +45,49 @@
                 datasets: [{
                     label: metricaNombre,
                     data: dataValues,
-                    borderColor: '#3b82f6',
-                    backgroundColor: '#ffffff',
-                    borderWidth: 2,
+                    borderColor: '#2563eb',
+                    backgroundColor: gradient,
+                    borderWidth: 2.5,
+                    fill: true,
                     pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#3b82f6',
-                    pointRadius: 4,
-                    tension: 0.1
+                    pointBorderColor: '#2563eb',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.35
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: '700' },
+                        bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                        padding: 10,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' ' + "{{ $metricaSeleccionada->unidad_medida }}";
+                            }
+                        }
+                    }
+                },
                 scales: {
                     y: { 
-                        // Sugerimos límites dinámicos basados en la métrica (Opcional pero recomendado)
                         suggestedMin: {{ $metricaSeleccionada->rango_min_normal ?? 0 }}, 
-                        grid: { borderDash: [5, 5] }, 
-                        border: { display: false } 
+                        grid: { color: '#f1f5f9', borderDash: [4, 4] }, 
+                        border: { display: false },
+                        ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }, color: '#64748b' }
                     },
-                    x: { grid: { display: false }, border: { display: false } }
+                    x: { 
+                        grid: { display: false }, 
+                        border: { display: false },
+                        ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }, color: '#64748b' }
+                    }
                 }
             }
         });

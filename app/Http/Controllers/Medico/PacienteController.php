@@ -15,11 +15,12 @@ class PacienteController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Obtener el ID del médico autenticado (simulado como 1 si no tienes Auth aún)
-        $medicoId = auth()->check() ? auth()->user()->id : 10;
+        // 1. Obtener el perfil médico del usuario autenticado
+        $medico = auth()->check() ? auth()->user()->medico : null;
+        $medicoId = $medico?->id;
 
-        // 2. Query base para los pacientes de este médico
-        $queryBase = Paciente::where('medico_id', $medicoId);
+        // 2. Query base para los pacientes de este médico (o todos si no tiene filtro específico)
+        $queryBase = $medicoId ? Paciente::where('medico_id', $medicoId) : Paciente::query();
 
         // 3. Calcular Estadísticas (Clonamos la query para no afectarla)
         $stats = [
@@ -103,6 +104,37 @@ class PacienteController extends Controller
         ));
     }
 
+    /**
+     * Registrar una métrica para un paciente desde el panel médico.
+     */
+    public function storeMetrica(Request $request, $id)
+    {
+        $paciente = Paciente::with('usuario')->findOrFail($id);
+
+        $request->validate([
+            'tipo_metrica_id' => 'required|exists:metricas,id',
+            'valor' => 'required|numeric|between:0,9999.99',
+            'notas' => 'nullable|string|max:255',
+        ]);
+
+        MetricaPaciente::create([
+            'paciente_id' => $paciente->id,
+            'tipo_metrica_id' => $request->tipo_metrica_id,
+            'valor' => $request->valor,
+            'fecha_registro' => now(),
+            'notas' => $request->notas,
+        ]);
+
+        $metrica = Metrica::find($request->tipo_metrica_id);
+
+        return redirect()
+            ->route('medico.pacientes.show', [
+                'id' => $id,
+                'metrica_id' => $request->tipo_metrica_id,
+            ])
+            ->with('success', "Métrica '{$metrica->nombre}' registrada exitosamente para {$paciente->usuario->primer_nombre}.");
+    }
+
     public function exportPDF($id, Request $request)
     {
         // 1. Obtener los datos del paciente y catálogos
@@ -134,4 +166,58 @@ class PacienteController extends Controller
         $nombreArchivo = 'Reporte_' . str_replace(' ', '_', $paciente->usuario->primer_nombre) . '_' . $fechaFin . '.pdf';
         return $pdf->download($nombreArchivo);
     }
+
+    /**
+     * Centro de Reportes Clínicos y Telemetría Médica
+     */
+    public function reportes(Request $request)
+    {
+        $medico = auth()->check() ? auth()->user()->medico : null;
+        $medicoId = $medico?->id;
+
+        $queryPacientes = $medicoId ? Paciente::where('medico_id', $medicoId) : Paciente::query();
+
+        $totalPacientes = (clone $queryPacientes)->count();
+        $riesgoAlto = (clone $queryPacientes)->where('nivel_riesgo', 'Alto')->count();
+        $riesgoMedio = (clone $queryPacientes)->where('nivel_riesgo', 'Medio')->count();
+        $riesgoBajo = (clone $queryPacientes)->where('nivel_riesgo', 'Bajo')->count();
+
+        // Pacientes con sus últimas métricas para el radar clínico
+        $pacientesConMetricas = (clone $queryPacientes)
+            ->with(['usuario', 'ultimaMetrica.tipoMetrica'])
+            ->get();
+
+        // Últimas alertas clínicas registradas (últimos 15 días)
+        $alertasRecientes = MetricaPaciente::whereHas('paciente', function($q) use ($medicoId) {
+                if ($medicoId) {
+                    $q->where('medico_id', $medicoId);
+                }
+            })
+            ->with(['paciente.usuario', 'tipoMetrica'])
+            ->where(function($q) {
+                // Presión sistólica alta (>=140), Diastólica alta (>=90) o Glucosa alterada (>=140 o <=70)
+                $q->where(function($sub) {
+                    $sub->where('tipo_metrica_id', 1)->where('valor', '>=', 140);
+                })->orWhere(function($sub) {
+                    $sub->where('tipo_metrica_id', 2)->where('valor', '>=', 90);
+                })->orWhere(function($sub) {
+                    $sub->where('tipo_metrica_id', 3)->where('valor', '>=', 140);
+                })->orWhere(function($sub) {
+                    $sub->where('tipo_metrica_id', 3)->where('valor', '<=', 70);
+                });
+            })
+            ->orderBy('fecha_registro', 'desc')
+            ->limit(8)
+            ->get();
+
+        return view('medico.reportes', compact(
+            'totalPacientes',
+            'riesgoAlto',
+            'riesgoMedio',
+            'riesgoBajo',
+            'pacientesConMetricas',
+            'alertasRecientes'
+        ));
+    }
 }
+

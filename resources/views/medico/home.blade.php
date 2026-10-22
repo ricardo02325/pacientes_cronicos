@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CróniCare - Dashboard Médico</title>
+    <title>CroniCare - Dashboard Médico</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -488,7 +488,7 @@
                 <i class="fa-solid fa-heart-pulse"></i>
             </div>
             <div class="logo-text">
-                <h2>CróniCare</h2>
+                <h2>CroniCare</h2>
                 <p>Panel Médico</p>
             </div>
         </div>

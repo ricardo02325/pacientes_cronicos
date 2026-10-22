@@ -28,7 +28,23 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redirección inteligente según el rol del usuario
+        $user = $request->user();
+
+        if ($user->rol_id === 1) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        if ($user->rol_id === 2) {
+            return redirect()->intended(route('medico.pacientes.index'));
+        }
+
+        if ($user->rol_id === 3) {
+            return redirect()->intended(route('paciente.dashboard'));
+        }
+
+        // Fallback: si no tiene rol reconocido, va al login
+        return redirect()->route('login');
     }
 
     /**

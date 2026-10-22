@@ -1,0 +1,276 @@
+{
+  "info": {
+    "name": "API Monitoreo Pacientes Crónicos (App Móvil)",
+    "_postman_id": "c1f7b882-95b8-4c6e-8ff4-9336181f7cfb",
+    "description": "Colección completa de endpoints RESTful para la App Móvil y Sistema de Pacientes Crónicos. Incluye autenticación con Laravel Sanctum (Bearer Token), auto-registro de pacientes, catálogos y gestión de métricas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Autenticación y Cuentas",
+      "item": [
+        {
+          "name": "Auto-Registro de Paciente (Móvil)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"primer_nombre\": \"Carlos\",\n  \"segundo_nombre\": \"Eduardo\",\n  \"apellido_paterno\": \"Gómez\",\n  \"apellido_materno\": \"López\",\n  \"email\": \"carlos.gomez@ejemplo.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"fecha_nacimiento\": \"1988-04-12\",\n  \"telefono_emergencia\": \"5551234567\",\n  \"sexo\": \"Masculino\",\n  \"estatura\": 1.74,\n  \"diagnostico_principal\": \"Hipertensión Arterial\",\n  \"medico_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register-paciente",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register-paciente"]
+            }
+          }
+        },
+        {
+          "name": "Login (Móvil)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"carlos.gomez@ejemplo.com\",\n  \"password\": \"password123\",\n  \"device_name\": \"Pixel_7_Android\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Consultar Perfil (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Logout (Revocar Token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Catálogos",
+      "item": [
+        {
+          "name": "Catálogo de Métricas (Rangos y Unidades)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/catalogos/metricas",
+              "host": ["{{base_url}}"],
+              "path": ["catalogos", "metricas"]
+            }
+          }
+        },
+        {
+          "name": "Catálogo de Médicos Disponibles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/catalogos/medicos",
+              "host": ["{{base_url}}"],
+              "path": ["catalogos", "medicos"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Métricas de Salud",
+      "item": [
+        {
+          "name": "Registrar Métrica (RF-04)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo_metrica_id\": 1,\n  \"valor\": 120.0,\n  \"fecha_registro\": \"2026-10-21 21:00:00\",\n  \"notas\": \"Toma matutina en reposo\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/metricas",
+              "host": ["{{base_url}}"],
+              "path": ["metricas"]
+            }
+          }
+        },
+        {
+          "name": "Historial de Métricas con Filtros",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/metricas?tipo_metrica_id=1&fecha_inicio=2026-10-01&fecha_fin=2026-10-31",
+              "host": ["{{base_url}}"],
+              "path": ["metricas"],
+              "query": [
+                {
+                  "key": "tipo_metrica_id",
+                  "value": "1"
+                },
+                {
+                  "key": "fecha_inicio",
+                  "value": "2026-10-01"
+                },
+                {
+                  "key": "fecha_fin",
+                  "value": "2026-10-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resumen Dashboard Móvil (Últimas mediciones)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/metricas/resumen-dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["metricas", "resumen-dashboard"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

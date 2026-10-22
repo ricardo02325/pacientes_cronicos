@@ -1,27 +1,51 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard General')
 
 @push('styles')
-    @vite('resources/css/admin/dashboard.css')
+    @vite(['resources/css/admin/pacientes.css', 'resources/css/admin/dashboard.css'])
 @endpush
 
 @section('content')
 
-    @include('admin.partials.dashboard.stats')
+    <!-- Banner de bienvenida -->
+    <div class="patients-header-container" style="margin-bottom: 24px;">
+        <div class="patients-title-group">
+            <h1 class="page-main-heading">Panel de Control Clínico</h1>
+            <p class="page-sub-heading">
+                Resumen ejecutivo del sistema de monitoreo de pacientes crónicos • {{ now()->translatedFormat('d \d\e F, Y') }}
+            </p>
+        </div>
 
-    <div class="content-grid">
-        @include('admin.partials.dashboard.table')
-        @include('admin.partials.dashboard.chart')
+        <div class="patients-header-actions">
+            <a href="{{ route('admin.pacientes') }}" class="btn-primary">
+                <i class="fa-solid fa-hospital-user"></i>
+                <span>Gestionar Pacientes</span>
+            </a>
+            <a href="{{ route('admin.medicos') }}" class="btn-secondary">
+                <i class="fa-solid fa-user-doctor"></i>
+                <span>Gestionar Médicos</span>
+            </a>
+        </div>
     </div>
 
-    @include('admin.partials.pacientes.modal_editar')
+    @include('admin.partials.dashboard.stats')
 
-    @push('scripts')
-        <script>
-            window.condicionesChart = @json($condiciones);
-        </script>
-        @vite('resources/js/admin/dashboard.js')
-    @endpush
+    <div class="dashboard-main-grid">
+        <div class="grid-table-area">
+            @include('admin.partials.dashboard.table')
+        </div>
+        <div class="grid-chart-area">
+            @include('admin.partials.dashboard.chart')
+        </div>
+    </div>
 
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.condicionesChart = @json($condiciones ?? []);
+    </script>
+    @vite('resources/js/admin/dashboard.js')
+@endpush

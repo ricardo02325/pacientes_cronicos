@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Usuario;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -42,15 +43,38 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = [
+            'email' => $this->input('email'),
+            'password' => $this->input('password'),
+            'estado' => 'Activo',
+        ];
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
+            // Si el correo existe pero el estado es Inactivo, informarle al usuario
+            $usuarioInactivo = Usuario::where('email', $this->input('email'))
+                ->where('estado', 'Inactivo')
+                ->first();
+
+            if ($usuarioInactivo) {
+                throw ValidationException::withMessages([
+                    'email' => 'Esta cuenta se encuentra inactiva. Contacta al administrador.',
+                ]);
+            }
+
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Credenciales incorrectas. Verifica tu correo y contraseña.',
             ]);
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        // Actualizar la marca de tiempo de último acceso del usuario
+        $user = Auth::user();
+        if ($user instanceof Usuario) {
+            $user->update(['ultimo_acceso' => now()]);
+        }
     }
 
     /**
