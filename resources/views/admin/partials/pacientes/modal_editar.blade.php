@@ -94,19 +94,42 @@
                 <!-- Sección 3: Datos Clínicos -->
                 <div class="form-section-header" style="margin-top: 20px;">
                     <span class="section-tag">3</span>
-                    <span>Expediente Médico</span>
+                    <span>Expediente Clínico y Equipo Médico</span>
                 </div>
 
                 <div class="form-grid-2">
-                    <div class="form-group-custom" style="grid-column: span 2;">
-                        <label class="modal-label" for="edit_medico_id">Médico Asignado <span class="required-star">*</span></label>
-                        <select id="edit_medico_id" name="medico_id" class="modal-select" required>
-                            @foreach($medicos ?? [] as $doc)
-                                <option value="{{ $doc->id }}">
-                                    Dr(a). {{ $doc->nombre_completo }} — Especialidad: {{ $doc->especialidad }} (Turno: {{ $doc->turno }})
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="form-group-custom doctor-assignment" style="grid-column: span 2;">
+                        <div class="doctor-assignment-heading">
+                            <span class="modal-label">Médicos asignados <span class="required-star">*</span></span>
+                            <span class="doctor-selection-count" id="editDoctorSelectionCount">0 seleccionados</span>
+                        </div>
+                        <span class="field-hint">Selecciona uno o varios médicos y marca cuál será el principal.</span>
+                        <div class="doctor-assignment-tools">
+                            <input type="search" id="editDoctorSearch" class="modal-input doctor-search" placeholder="Buscar por nombre o especialidad" autocomplete="off">
+                            <div class="doctor-assignment-actions">
+                                <button type="button" class="doctor-assignment-action" id="editSelectVisibleDoctors">Seleccionar visibles</button>
+                                <button type="button" class="doctor-assignment-action" id="editClearDoctors">Limpiar</button>
+                            </div>
+                        </div>
+                        <div class="doctor-assignment-list" id="editDoctorAssignmentList">
+                            @forelse($medicos ?? [] as $doc)
+                                <div class="doctor-option">
+                                    <label class="doctor-option-select" for="edit_doctor_{{ $doc->id }}">
+                                        <input type="checkbox" class="doctor-assignment-checkbox" id="edit_doctor_{{ $doc->id }}" name="medico_ids[]" value="{{ $doc->id }}">
+                                        <span class="doctor-option-details">
+                                            <strong>Dr(a). {{ $doc->nombre_completo }}</strong>
+                                            <small>{{ $doc->especialidad }} · {{ $doc->turno }} · {{ $doc->estado }}</small>
+                                        </span>
+                                    </label>
+                                    <label class="doctor-principal-choice">
+                                        <input type="radio" name="medico_principal_id" value="{{ $doc->id }}" required>
+                                        <span>Principal</span>
+                                    </label>
+                                </div>
+                            @empty
+                                <p class="doctor-assignment-empty">No hay médicos registrados para asignar.</p>
+                            @endforelse
+                        </div>
                     </div>
 
                     <div class="form-group-custom">
@@ -125,7 +148,13 @@
 
                     <div class="form-group-custom" style="grid-column: span 2;">
                         <label class="modal-label" for="edit_diagnostico_principal">Diagnóstico Principal <span class="required-star">*</span></label>
-                        <input type="text" id="edit_diagnostico_principal" name="diagnostico_principal" class="modal-input" required>
+                        <select id="edit_diagnostico_principal" name="diagnostico_principal" class="modal-select" required>
+                            <option value="" disabled selected hidden>Selecciona una condición...</option>
+                            <option value="Hipertensión">Hipertensión</option>
+                            <option value="Diabetes tipo 2">Diabetes tipo 2</option>
+                            <option value="Obesidad">Obesidad</option>
+                        </select>
+                        <span class="field-hint">Elige la condición crónica principal del paciente.</span>
                     </div>
                 </div>
             </div>

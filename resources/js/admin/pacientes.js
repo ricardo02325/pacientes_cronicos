@@ -11,8 +11,141 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeModalIcon = document.getElementById("closeModalIcon");
     const cancelModalBtn = document.getElementById("cancelModalBtn");
 
+    const setupDoctorAssignment = (listId, countId, searchId, selectVisibleId, clearId, formId) => {
+        const list = document.getElementById(listId);
+        const count = document.getElementById(countId);
+        if (!list) return null;
+
+        const search = document.getElementById(searchId);
+        const selectVisibleButton = document.getElementById(selectVisibleId);
+        const clearButton = document.getElementById(clearId);
+        const form = document.getElementById(formId);
+        const checkboxes = () => [...list.querySelectorAll(".doctor-assignment-checkbox")];
+        const radios = () => [...list.querySelectorAll('input[name="medico_principal_id"]')];
+
+        const update = () => {
+            const term = search?.value.trim().toLocaleLowerCase() || "";
+            list.querySelectorAll(".doctor-option").forEach((option) => {
+                option.hidden = !option.textContent.toLocaleLowerCase().includes(term);
+            });
+
+            const selected = checkboxes().filter((checkbox) => checkbox.checked);
+            checkboxes().forEach((checkbox) => {
+                checkbox.closest(".doctor-option")?.classList.toggle("is-selected", checkbox.checked);
+                checkbox.setCustomValidity("");
+            });
+            radios().forEach((radio) => {
+                radio.disabled = !checkboxes().some((checkbox) => checkbox.value === radio.value && checkbox.checked);
+            });
+            if (count) {
+                count.textContent = `${selected.length} ${selected.length === 1 ? "seleccionado" : "seleccionados"}`;
+            }
+        };
+
+        search?.addEventListener("input", update);
+
+        selectVisibleButton?.addEventListener("click", () => {
+            checkboxes().forEach((checkbox) => {
+                if (!checkbox.closest(".doctor-option")?.hidden) {
+                    checkbox.checked = true;
+                }
+            });
+            if (!radios().some((radio) => radio.checked)) {
+                const firstSelected = checkboxes().find((checkbox) => checkbox.checked);
+                const firstRadio = firstSelected && radios().find((radio) => radio.value === firstSelected.value);
+                if (firstRadio) firstRadio.checked = true;
+            }
+            update();
+        });
+
+        clearButton?.addEventListener("click", () => {
+            checkboxes().forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+            radios().forEach((radio) => {
+                radio.checked = false;
+            });
+            update();
+        });
+
+        form?.addEventListener("submit", (event) => {
+            if (checkboxes().some((checkbox) => checkbox.checked)) return;
+
+            event.preventDefault();
+            const firstCheckbox = checkboxes()[0];
+            if (firstCheckbox) {
+                firstCheckbox.setCustomValidity("Selecciona al menos un médico.");
+                firstCheckbox.reportValidity();
+            }
+        });
+
+        list.addEventListener("change", (event) => {
+            const checkbox = event.target.closest(".doctor-assignment-checkbox");
+            if (checkbox) {
+                const radio = radios().find((item) => item.value === checkbox.value);
+                if (checkbox.checked && radio && !radios().some((item) => item.checked)) {
+                    radio.checked = true;
+                } else if (!checkbox.checked && radio?.checked) {
+                    radio.checked = false;
+                    const nextCheckbox = checkboxes().find((item) => item.checked);
+                    const nextRadio = nextCheckbox && radios().find((item) => item.value === nextCheckbox.value);
+                    if (nextRadio) nextRadio.checked = true;
+                }
+                update();
+                return;
+            }
+
+            const radio = event.target.closest('input[name="medico_principal_id"]');
+            if (radio) {
+                const checkboxForPrincipal = checkboxes().find((item) => item.value === radio.value);
+                if (checkboxForPrincipal) checkboxForPrincipal.checked = true;
+                update();
+            }
+        });
+
+        return {
+            reset() {
+                if (search) search.value = "";
+                checkboxes().forEach((checkbox) => {
+                    checkbox.checked = false;
+                });
+                radios().forEach((radio) => {
+                    radio.checked = false;
+                });
+                update();
+            },
+            setSelection(ids, principalId) {
+                if (search) search.value = "";
+                const selectedIds = ids.map(String);
+                checkboxes().forEach((checkbox) => {
+                    checkbox.checked = selectedIds.includes(checkbox.value);
+                });
+                radios().forEach((radio) => {
+                    radio.checked = radio.value === String(principalId || "");
+                });
+
+                if (!radios().some((radio) => radio.checked)) {
+                    const firstSelected = checkboxes().find((checkbox) => checkbox.checked);
+                    const firstRadio = firstSelected && radios().find((radio) => radio.value === firstSelected.value);
+                    if (firstRadio) firstRadio.checked = true;
+                }
+                update();
+            },
+        };
+    };
+
+    const createDoctorAssignment = setupDoctorAssignment(
+        "createDoctorAssignmentList",
+        "createDoctorSelectionCount",
+        "createDoctorSearch",
+        "createSelectVisibleDoctors",
+        "createClearDoctors",
+        "patientForm",
+    );
+
     if (addPatientBtn && modalOverlay) {
         addPatientBtn.addEventListener("click", () => {
+            createDoctorAssignment?.reset();
             modalOverlay.classList.remove("hidden");
         });
     }
@@ -36,6 +169,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeEditModalIcon = document.getElementById("closeEditModalIcon");
     const cancelEditModalBtn = document.getElementById("cancelEditModalBtn");
     const editPatientForm = document.getElementById("editPatientForm");
+    const editDoctorAssignment = setupDoctorAssignment(
+        "editDoctorAssignmentList",
+        "editDoctorSelectionCount",
+        "editDoctorSearch",
+        "editSelectVisibleDoctors",
+        "editClearDoctors",
+        "editPatientForm",
+    );
 
     const closeEditModal = () => {
         if (editModalOverlay) editModalOverlay.classList.add("hidden");
@@ -78,7 +219,15 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("edit_fecha_nacimiento").value = p.fecha_nacimiento || "";
             document.getElementById("edit_sexo").value = p.sexo || "Masculino";
             document.getElementById("edit_estado").value = p.estado || "Activo";
-            document.getElementById("edit_medico_id").value = p.medico_id || "";
+            const assignedDoctors = p.medicos || [];
+            const assignedDoctorIds = assignedDoctors.length
+                ? assignedDoctors.map((doctor) => doctor.id)
+                : (p.medico_id ? [p.medico_id] : []);
+            const principalDoctor = assignedDoctors.find((doctor) => doctor.es_principal);
+            editDoctorAssignment?.setSelection(
+                assignedDoctorIds,
+                principalDoctor?.id || p.medico_id,
+            );
             document.getElementById("edit_estatura").value = p.estatura || "";
             document.getElementById("edit_nivel_riesgo").value = p.nivel_riesgo || "Bajo";
             document.getElementById("edit_diagnostico_principal").value = p.diagnostico_principal || "";
@@ -143,6 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("view_edad_sexo").textContent = `${p.edad || 0} años • ${p.sexo}`;
             document.getElementById("view_estatura").textContent = p.estatura ? `${p.estatura} m` : "No registrada";
             document.getElementById("view_medico").textContent = `Dr(a). ${p.medico_nombre}`;
+            document.getElementById("view_medicos").textContent = (p.medicos || [])
+                .map((doctor) => `Dr(a). ${doctor.nombre_completo}${doctor.es_principal ? " (Principal)" : ""}`)
+                .join(" · ") || "Sin médicos asignados";
             document.getElementById("view_diagnostico").textContent = p.diagnostico_principal;
 
             // Badges

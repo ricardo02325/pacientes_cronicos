@@ -45,8 +45,13 @@
                 </div>
 
                 <div class="info-card-item" style="grid-column: span 2;">
-                    <span class="info-item-label"><i class="fa-solid fa-user-doctor"></i> Médico Responsable</span>
+                    <span class="info-item-label"><i class="fa-solid fa-user-doctor"></i> Médico Principal</span>
                     <span class="info-item-val" id="view_medico">-</span>
+                </div>
+
+                <div class="info-card-item" style="grid-column: span 2;">
+                    <span class="info-item-label"><i class="fa-solid fa-user-group"></i> Equipo Médico</span>
+                    <span class="info-item-val" id="view_medicos">-</span>
                 </div>
 
                 <div class="info-card-item" style="grid-column: span 2; background: #eff6ff; border-color: #bfdbfe;">

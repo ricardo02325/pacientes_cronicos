@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Medico extends Model
@@ -25,9 +26,11 @@ class Medico extends Model
         return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
-    public function pacientes(): HasMany
+    public function pacientes(): BelongsToMany
     {
-        return $this->hasMany(Paciente::class, 'medico_id');
+        return $this->belongsToMany(Paciente::class, 'medico_paciente')
+            ->withPivot('es_principal')
+            ->withTimestamps();
     }
 
     public function getNombreCompletoAttribute(): string

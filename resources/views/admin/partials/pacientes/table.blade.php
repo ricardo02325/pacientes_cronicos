@@ -2,23 +2,23 @@
     <!-- Barra superior de filtros rápidos dentro de la tarjeta -->
     <div class="table-toolbar">
         <div class="filter-pills-group">
-            <a href="{{ route('admin.pacientes', request()->only('buscar')) }}" 
+            <a href="{{ route('admin.pacientes', request()->except(['page', 'riesgo', 'estado'])) }}" 
                class="filter-pill {{ !request('riesgo') && !request('estado') ? 'active' : '' }}">
                 Todos los Pacientes
             </a>
-            <a href="{{ route('admin.pacientes', array_merge(request()->only('buscar'), ['riesgo' => 'Alto'])) }}" 
+            <a href="{{ route('admin.pacientes', array_merge(request()->except(['page', 'riesgo', 'estado']), ['riesgo' => 'Alto'])) }}" 
                class="filter-pill pill-danger {{ request('riesgo') == 'Alto' ? 'active' : '' }}">
                 <span class="dot-indicator dot-danger"></span> Críticos (Alto)
             </a>
-            <a href="{{ route('admin.pacientes', array_merge(request()->only('buscar'), ['riesgo' => 'Medio'])) }}" 
+            <a href="{{ route('admin.pacientes', array_merge(request()->except(['page', 'riesgo', 'estado']), ['riesgo' => 'Medio'])) }}" 
                class="filter-pill pill-warning {{ request('riesgo') == 'Medio' ? 'active' : '' }}">
                 <span class="dot-indicator dot-warning"></span> Riesgo Medio
             </a>
-            <a href="{{ route('admin.pacientes', array_merge(request()->only('buscar'), ['riesgo' => 'Bajo'])) }}" 
+            <a href="{{ route('admin.pacientes', array_merge(request()->except(['page', 'riesgo', 'estado']), ['riesgo' => 'Bajo'])) }}" 
                class="filter-pill pill-success {{ request('riesgo') == 'Bajo' ? 'active' : '' }}">
                 <span class="dot-indicator dot-success"></span> Estables (Bajo)
             </a>
-            <a href="{{ route('admin.pacientes', array_merge(request()->only('buscar'), ['estado' => 'Inactivo'])) }}" 
+            <a href="{{ route('admin.pacientes', array_merge(request()->except(['page', 'riesgo', 'estado']), ['estado' => 'Inactivo'])) }}" 
                class="filter-pill pill-muted {{ request('estado') == 'Inactivo' ? 'active' : '' }}">
                 Inactivos
             </a>
@@ -74,8 +74,18 @@
                                 </span>
                                 <div class="assigned-doctor">
                                     <i class="fa-solid fa-user-doctor"></i>
-                                    <span>Dr(a). {{ $paciente->medico->nombre_completo ?? 'Sin médico asignado' }}</span>
+                                    @php
+                                        $medicoPrincipal = $paciente->medicos->first(fn ($medico) => (bool) $medico->pivot->es_principal)
+                                            ?? $paciente->medico;
+                                        $otrosMedicos = $paciente->medicos->reject(fn ($medico) => $medico->id === $medicoPrincipal?->id);
+                                    @endphp
+                                    <span>Principal: Dr(a). {{ $medicoPrincipal->nombre_completo ?? 'Sin médico asignado' }}</span>
                                 </div>
+                                @if($otrosMedicos->isNotEmpty())
+                                    <div class="assigned-doctor-more" title="{{ $otrosMedicos->pluck('nombre_completo')->implode(', ') }}">
+                                        + {{ $otrosMedicos->count() }} médico{{ $otrosMedicos->count() === 1 ? '' : 's' }} en el equipo
+                                    </div>
+                                @endif
                             </div>
                         </td>
 
@@ -180,7 +190,7 @@
     <!-- Paginación -->
     @if(isset($pacientes) && method_exists($pacientes, 'links'))
         <div class="pagination-container">
-            {{ $pacientes->links() }}
+            {{ $pacientes->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     @endif
 </div>

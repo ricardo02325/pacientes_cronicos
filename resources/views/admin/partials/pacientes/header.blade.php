@@ -28,7 +28,7 @@
                     autocomplete="off"
                 >
                 @if(request('buscar'))
-                    <a href="{{ route('admin.pacientes', array_merge(request()->except('buscar'), [])) }}" class="search-clear-btn" title="Limpiar búsqueda">
+                    <a href="{{ route('admin.pacientes', request()->except(['page', 'buscar'])) }}" class="search-clear-btn" title="Limpiar búsqueda">
                         <i class="fa-solid fa-xmark"></i>
                     </a>
                 @endif

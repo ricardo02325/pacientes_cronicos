@@ -32,7 +32,7 @@ class AuthController extends Controller
             'telefono_emergencia'  => 'required|string|max:20',
             'sexo'                 => 'required|string|in:Masculino,Femenino,Otro',
             'estatura'             => 'required|numeric|between:0.50,2.60',
-            'diagnostico_principal'=> 'required|string|max:255',
+            'diagnostico_principal'=> 'required|in:Hipertensión,Diabetes tipo 2,Obesidad',
             'medico_id'            => 'nullable|exists:medicos,id',
         ], [
             'email.unique'          => 'Este correo electrónico ya se encuentra registrado.',
@@ -40,6 +40,7 @@ class AuthController extends Controller
             'password.min'          => 'La contraseña debe tener al menos 8 caracteres.',
             'fecha_nacimiento.before'=> 'La fecha de nacimiento debe ser anterior al día de hoy.',
             'medico_id.exists'      => 'El médico seleccionado no es válido.',
+            'diagnostico_principal.in' => 'El diagnóstico debe ser Hipertensión, Diabetes tipo 2 u Obesidad.',
         ]);
 
         if ($validator->fails()) {
@@ -77,12 +78,18 @@ class AuthController extends Controller
                     'nivel_riesgo'         => 'Bajo',
                 ]);
 
+                if ($request->filled('medico_id')) {
+                    $paciente->medicos()->sync([
+                        $request->medico_id => ['es_principal' => true],
+                    ]);
+                }
+
                 // 3. Crear token Sanctum para la app móvil
                 $token = $usuario->createToken('mobile_app_patient')->plainTextToken;
 
                 return [
                     'usuario'  => $usuario,
-                    'paciente' => $paciente->load('medico.usuario'),
+                    'paciente' => $paciente->load('medico.usuario', 'medicos.usuario'),
                     'token'    => $token,
                 ];
             });

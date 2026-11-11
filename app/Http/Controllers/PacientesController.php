@@ -18,7 +18,7 @@ class PacientesController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Paciente::with(['usuario', 'medico.usuario', 'ultimaMetrica'])
+        $query = Paciente::with(['usuario', 'medico.usuario', 'medicos.usuario', 'ultimaMetrica'])
             ->whereHas('usuario');
 
         // Búsqueda por texto (nombre, apellido, email o diagnóstico)
@@ -49,7 +49,7 @@ class PacientesController extends Controller
         // Ordenamiento
         $query->orderBy('created_at', 'desc');
 
-        $pacientes = $query->paginate(12)->withQueryString();
+        $pacientes = $query->paginate(12)->onEachSide(1)->withQueryString();
 
         // Totales y estadísticas
         $totalPacientes = Paciente::count();
@@ -59,7 +59,8 @@ class PacientesController extends Controller
 
         // Médicos disponibles para asignación
         $medicos = Medico::with('usuario')
-            ->whereHas('usuario', fn($q) => $q->where('estado', 'Activo'))
+            ->whereHas('usuario')
+            ->orderBy('id')
             ->get();
 
         return view('admin.pacientes', compact(
@@ -85,12 +86,19 @@ class PacientesController extends Controller
             'email' => 'required|email|max:50|unique:usuarios,email',
             'password' => 'nullable|string|min:6|max:255',
 
-            'medico_id' => 'required|exists:medicos,id',
+            'medico_ids' => 'required|array|min:1',
+            'medico_ids.*' => 'required|integer|distinct|exists:medicos,id',
+            'medico_principal_id' => [
+                'required',
+                'integer',
+                'exists:medicos,id',
+                Rule::in($request->input('medico_ids', [])),
+            ],
             'fecha_nacimiento' => 'required|date',
             'telefono_emergencia' => 'required|string|max:20',
             'sexo' => 'required|string|in:Masculino,Femenino,Otro',
             'estatura' => 'nullable|numeric|between:0.5,2.5',
-            'diagnostico_principal' => 'required|string|max:255',
+            'diagnostico_principal' => 'required|in:Hipertensión,Diabetes tipo 2,Obesidad',
             'nivel_riesgo' => 'required|in:Bajo,Medio,Alto',
         ]);
 
@@ -115,7 +123,7 @@ class PacientesController extends Controller
             // 2. Crear el expediente de paciente
             $paciente = Paciente::create([
                 'usuario_id' => $usuario->id,
-                'medico_id' => $request->medico_id,
+                'medico_id' => $request->medico_principal_id,
                 'fecha_nacimiento' => $request->fecha_nacimiento,
                 'telefono_emergencia' => $request->telefono_emergencia,
                 'sexo' => $request->sexo,
@@ -124,13 +132,20 @@ class PacientesController extends Controller
                 'nivel_riesgo' => $request->nivel_riesgo,
             ]);
 
+            $asignaciones = collect($request->input('medico_ids'))
+                ->mapWithKeys(fn ($medicoId) => [
+                    $medicoId => ['es_principal' => (int) $medicoId === (int) $request->medico_principal_id],
+                ])
+                ->all();
+            $paciente->medicos()->sync($asignaciones);
+
             DB::commit();
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => "Paciente {$usuario->nombre_completo} registrado exitosamente.",
-                    'paciente' => $paciente->load('usuario', 'medico.usuario'),
+                    'paciente' => $paciente->load('usuario', 'medico.usuario', 'medicos.usuario'),
                 ]);
             }
 
@@ -157,7 +172,9 @@ class PacientesController extends Controller
      */
     public function show($id)
     {
-        $paciente = Paciente::with(['usuario', 'medico.usuario', 'ultimaMetrica'])->findOrFail($id);
+        $paciente = Paciente::with(['usuario', 'medico.usuario', 'medicos.usuario', 'ultimaMetrica'])->findOrFail($id);
+        $medicoPrincipal = $paciente->medicos->first(fn ($medico) => (bool) $medico->pivot->es_principal)
+            ?? $paciente->medico;
 
         return response()->json([
             'success' => true,
@@ -171,8 +188,16 @@ class PacientesController extends Controller
                 'nombre_completo' => $paciente->usuario->nombre_completo,
                 'email' => $paciente->usuario->email,
                 'estado' => $paciente->usuario->estado,
-                'medico_id' => $paciente->medico_id,
-                'medico_nombre' => $paciente->medico ? $paciente->medico->nombre_completo : 'Sin Asignar',
+                'medico_id' => $medicoPrincipal?->id,
+                'medico_nombre' => $medicoPrincipal?->nombre_completo ?? 'Sin Asignar',
+                'medicos' => $paciente->medicos->map(function ($medico) {
+                    return [
+                        'id' => $medico->id,
+                        'nombre_completo' => $medico->nombre_completo,
+                        'especialidad' => $medico->especialidad,
+                        'es_principal' => (bool) ($medico->pivot->es_principal ?? false),
+                    ];
+                })->values(),
                 'fecha_nacimiento' => $paciente->fecha_nacimiento,
                 'telefono_emergencia' => $paciente->telefono_emergencia,
                 'sexo' => $paciente->sexo,
@@ -207,12 +232,19 @@ class PacientesController extends Controller
             'password' => 'nullable|string|min:6|max:255',
             'estado' => 'required|in:Activo,Inactivo',
 
-            'medico_id' => 'required|exists:medicos,id',
+            'medico_ids' => 'required|array|min:1',
+            'medico_ids.*' => 'required|integer|distinct|exists:medicos,id',
+            'medico_principal_id' => [
+                'required',
+                'integer',
+                'exists:medicos,id',
+                Rule::in($request->input('medico_ids', [])),
+            ],
             'fecha_nacimiento' => 'required|date',
             'telefono_emergencia' => 'required|string|max:20',
             'sexo' => 'required|string|in:Masculino,Femenino,Otro',
             'estatura' => 'nullable|numeric|between:0.5,2.5',
-            'diagnostico_principal' => 'required|string|max:255',
+            'diagnostico_principal' => 'required|in:Hipertensión,Diabetes tipo 2,Obesidad',
             'nivel_riesgo' => 'required|in:Bajo,Medio,Alto',
         ]);
 
@@ -236,7 +268,7 @@ class PacientesController extends Controller
 
             // Actualizar Paciente
             $paciente->update([
-                'medico_id' => $request->medico_id,
+                'medico_id' => $request->medico_principal_id,
                 'fecha_nacimiento' => $request->fecha_nacimiento,
                 'telefono_emergencia' => $request->telefono_emergencia,
                 'sexo' => $request->sexo,
@@ -244,6 +276,13 @@ class PacientesController extends Controller
                 'diagnostico_principal' => $request->diagnostico_principal,
                 'nivel_riesgo' => $request->nivel_riesgo,
             ]);
+
+            $asignaciones = collect($request->input('medico_ids'))
+                ->mapWithKeys(fn ($medicoId) => [
+                    $medicoId => ['es_principal' => (int) $medicoId === (int) $request->medico_principal_id],
+                ])
+                ->all();
+            $paciente->medicos()->sync($asignaciones);
 
             DB::commit();
 

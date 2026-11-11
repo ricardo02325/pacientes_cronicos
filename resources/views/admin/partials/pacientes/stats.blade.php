@@ -1,5 +1,5 @@
 <div class="patient-stats-strip">
-    <a href="{{ route('admin.pacientes') }}" class="patient-stat-card {{ !request('riesgo') ? 'active-filter' : '' }}">
+    <a href="{{ route('admin.pacientes', request()->except(['page', 'riesgo', 'estado'])) }}" class="patient-stat-card {{ !request('riesgo') ? 'active-filter' : '' }}">
         <div class="stat-icon-wrapper bg-blue">
             <i class="fa-solid fa-users"></i>
         </div>
@@ -9,7 +9,7 @@
         </div>
     </a>
 
-    <a href="{{ route('admin.pacientes', array_merge(request()->except('riesgo'), ['riesgo' => 'Bajo'])) }}" class="patient-stat-card {{ request('riesgo') == 'Bajo' ? 'active-filter' : '' }}">
+    <a href="{{ route('admin.pacientes', array_merge(request()->except(['page', 'riesgo', 'estado']), ['riesgo' => 'Bajo'])) }}" class="patient-stat-card {{ request('riesgo') == 'Bajo' ? 'active-filter' : '' }}">
         <div class="stat-icon-wrapper bg-green">
             <i class="fa-solid fa-heart-circle-check"></i>
         </div>
@@ -19,7 +19,7 @@
         </div>
     </a>
 
-    <a href="{{ route('admin.pacientes', array_merge(request()->except('riesgo'), ['riesgo' => 'Medio'])) }}" class="patient-stat-card {{ request('riesgo') == 'Medio' ? 'active-filter' : '' }}">
+    <a href="{{ route('admin.pacientes', array_merge(request()->except(['page', 'riesgo', 'estado']), ['riesgo' => 'Medio'])) }}" class="patient-stat-card {{ request('riesgo') == 'Medio' ? 'active-filter' : '' }}">
         <div class="stat-icon-wrapper bg-amber">
             <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
@@ -29,7 +29,7 @@
         </div>
     </a>
 
-    <a href="{{ route('admin.pacientes', array_merge(request()->except('riesgo'), ['riesgo' => 'Alto'])) }}" class="patient-stat-card {{ request('riesgo') == 'Alto' ? 'active-filter' : '' }}">
+    <a href="{{ route('admin.pacientes', array_merge(request()->except(['page', 'riesgo', 'estado']), ['riesgo' => 'Alto'])) }}" class="patient-stat-card {{ request('riesgo') == 'Alto' ? 'active-filter' : '' }}">
         <div class="stat-icon-wrapper bg-red">
             <i class="fa-solid fa-circle-exclamation pulse-icon"></i>
         </div>

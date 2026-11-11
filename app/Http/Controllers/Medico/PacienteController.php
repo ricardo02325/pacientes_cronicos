@@ -20,7 +20,7 @@ class PacienteController extends Controller
         $medicoId = $medico?->id;
 
         // 2. Query base para los pacientes de este médico (o todos si no tiene filtro específico)
-        $queryBase = $medicoId ? Paciente::where('medico_id', $medicoId) : Paciente::query();
+        $queryBase = $medicoId ? Paciente::whereHas('medicos', fn($q) => $q->where('medicos.id', $medicoId)) : Paciente::query();
 
         // 3. Calcular Estadísticas (Clonamos la query para no afectarla)
         $stats = [
@@ -50,7 +50,7 @@ class PacienteController extends Controller
         }
 
         // 5. Obtener los resultados con sus relaciones
-        $pacientes = $queryBase->with(['usuario', 'ultimaMetrica'])->paginate(10);
+        $pacientes = $queryBase->with(['usuario', 'ultimaMetrica'])->paginate(10)->onEachSide(1)->withQueryString();
 
         // 6. Retornar a la vista con las variables
         return view('medico.pacientes', compact('stats', 'pacientes'));
@@ -175,7 +175,7 @@ class PacienteController extends Controller
         $medico = auth()->check() ? auth()->user()->medico : null;
         $medicoId = $medico?->id;
 
-        $queryPacientes = $medicoId ? Paciente::where('medico_id', $medicoId) : Paciente::query();
+        $queryPacientes = $medicoId ? Paciente::whereHas('medicos', fn($q) => $q->where('medicos.id', $medicoId)) : Paciente::query();
 
         $totalPacientes = (clone $queryPacientes)->count();
         $riesgoAlto = (clone $queryPacientes)->where('nivel_riesgo', 'Alto')->count();
@@ -188,9 +188,9 @@ class PacienteController extends Controller
             ->get();
 
         // Últimas alertas clínicas registradas (últimos 15 días)
-        $alertasRecientes = MetricaPaciente::whereHas('paciente', function($q) use ($medicoId) {
+        $alertasRecientes = MetricaPaciente::whereHas('paciente.medicos', function($q) use ($medicoId) {
                 if ($medicoId) {
-                    $q->where('medico_id', $medicoId);
+                    $q->where('medicos.id', $medicoId);
                 }
             })
             ->with(['paciente.usuario', 'tipoMetrica'])

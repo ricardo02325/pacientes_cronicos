@@ -531,6 +531,119 @@
 .pagination-container {
     padding: 16px 20px;
     border-top: 1px solid var(--border-color);
+    background: #fafbfd;
     display: flex;
     justify-content: flex-end;
+}
+
+.pagination-container nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.pagination-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.pagination-summary {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.page-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.page-link:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: var(--text-main);
+    transform: translateY(-1px);
+}
+
+.page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 10px 18px rgba(37, 99, 235, 0.18);
+}
+
+.page-item.disabled .page-link {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    pointer-events: none;
+    cursor: default;
+    box-shadow: none;
+}
+
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    min-width: 92px;
+    padding-inline: 14px;
+}
+
+@media (max-width: 640px) {
+    .pagination-container {
+        justify-content: center;
+    }
+
+    .pagination-container nav,
+    .pagination-nav {
+        align-items: center;
+        width: 100%;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+
+    .page-link {
+        min-width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .page-item:first-child .page-link,
+    .page-item:last-child .page-link {
+        min-width: 82px;
+    }
 }

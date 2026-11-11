@@ -1,12 +1,96 @@
 {
+  "resources/css/admin/app.css": {
+    "file": "assets/app-BFxcLUAS.css",
+    "src": "resources/css/admin/app.css"
+  },
+  "resources/css/admin/dashboard.css": {
+    "file": "assets/dashboard-Cwk93r3r.css",
+    "src": "resources/css/admin/dashboard.css",
+    "isEntry": true,
+    "name": "dashboard",
+    "names": [
+      "dashboard.css"
+    ]
+  },
+  "resources/css/admin/medicos.css": {
+    "file": "assets/medicos-Dp7VunDA.css",
+    "src": "resources/css/admin/medicos.css",
+    "isEntry": true,
+    "name": "medicos",
+    "names": [
+      "medicos.css"
+    ]
+  },
+  "resources/css/admin/pacientes.css": {
+    "file": "assets/pacientes-Bqn5FkQ6.css",
+    "src": "resources/css/admin/pacientes.css"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-CK8MQ19r.css",
-    "src": "resources/css/app.css",
+    "file": "assets/app-D7mdSgRi.css",
+    "src": "resources/css/app.css"
+  },
+  "resources/css/auth/login.css": {
+    "file": "assets/login-fGyXQp6o.css",
+    "src": "resources/css/auth/login.css",
+    "isEntry": true,
+    "name": "login",
+    "names": [
+      "login.css"
+    ]
+  },
+  "resources/css/medico/app.css": {
+    "file": "assets/app-DUER38X8.css",
+    "src": "resources/css/medico/app.css",
     "isEntry": true,
     "name": "app",
     "names": [
       "app.css"
     ]
+  },
+  "resources/css/medico/monitoreo.css": {
+    "file": "assets/monitoreo-Bg_wgk25.css",
+    "src": "resources/css/medico/monitoreo.css",
+    "isEntry": true,
+    "name": "monitoreo",
+    "names": [
+      "monitoreo.css"
+    ]
+  },
+  "resources/css/medico/pacientes.css": {
+    "file": "assets/pacientes-DBZ_wx_t.css",
+    "src": "resources/css/medico/pacientes.css",
+    "isEntry": true,
+    "name": "pacientes",
+    "names": [
+      "pacientes.css"
+    ]
+  },
+  "resources/js/admin/app.js": {
+    "file": "assets/app-DUC46xIV.js",
+    "name": "app",
+    "src": "resources/js/admin/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-BFxcLUAS.css"
+    ]
+  },
+  "resources/js/admin/dashboard.js": {
+    "file": "assets/dashboard-BY9wRVGZ.js",
+    "name": "dashboard",
+    "src": "resources/js/admin/dashboard.js",
+    "isEntry": true
+  },
+  "resources/js/admin/medicos.js": {
+    "file": "assets/medicos-DNrSuQLX.js",
+    "name": "medicos",
+    "src": "resources/js/admin/medicos.js",
+    "isEntry": true
+  },
+  "resources/js/admin/pacientes.js": {
+    "file": "assets/pacientes-DNpcyB_p.js",
+    "name": "pacientes",
+    "src": "resources/js/admin/pacientes.js",
+    "isEntry": true
   },
   "resources/js/app.js": {
     "file": "assets/app-DsIK1Lmc.js",

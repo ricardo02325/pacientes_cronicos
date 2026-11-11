@@ -126,7 +126,7 @@
     <!-- Paginación -->
     @if(isset($pacientes) && method_exists($pacientes, 'links'))
         <div class="pagination-container">
-            {{ $pacientes->withQueryString()->links() }}
+            {{ $pacientes->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     @endif
 </div>

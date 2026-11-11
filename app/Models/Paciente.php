@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -31,11 +32,21 @@ class Paciente extends Model
     }
 
     /**
-     * Relación con el médico a cargo.
+     * Relación con el médico principal (mantener compatibilidad con la base actual).
      */
     public function medico(): BelongsTo
     {
         return $this->belongsTo(Medico::class, 'medico_id');
+    }
+
+    /**
+     * Médicos asignados al paciente (soporte para varios médicos por paciente).
+     */
+    public function medicos(): BelongsToMany
+    {
+        return $this->belongsToMany(Medico::class, 'medico_paciente')
+            ->withPivot('es_principal')
+            ->withTimestamps();
     }
 
     /**

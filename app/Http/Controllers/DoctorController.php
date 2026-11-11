@@ -47,7 +47,7 @@ class DoctorController extends Controller
             });
         }
 
-        $medicos = $query->orderBy('created_at', 'desc')->get();
+        $medicos = $query->orderBy('created_at', 'desc')->paginate(12)->onEachSide(1)->withQueryString();
 
         // Estadísticas y métricas
         $totalMedicos = Medico::count();

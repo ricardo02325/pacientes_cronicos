@@ -412,6 +412,13 @@
     gap: 5px;
 }
 
+.assigned-doctor-more {
+    padding-left: 18px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+}
+
 /* Badges de Riesgo */
 .badge-risk {
     display: inline-flex;
@@ -657,8 +664,121 @@
 .pagination-container {
     padding: 16px 20px;
     border-top: 1px solid var(--border-color);
+    background: #fafbfd;
     display: flex;
     justify-content: flex-end;
+}
+
+.pagination-container nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.pagination-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.pagination-summary {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.page-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.page-link:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: var(--text-main);
+    transform: translateY(-1px);
+}
+
+.page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 10px 18px rgba(37, 99, 235, 0.18);
+}
+
+.page-item.disabled .page-link {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    pointer-events: none;
+    cursor: default;
+    box-shadow: none;
+}
+
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    min-width: 92px;
+    padding-inline: 14px;
+}
+
+@media (max-width: 640px) {
+    .pagination-container {
+        justify-content: center;
+    }
+
+    .pagination-container nav,
+    .pagination-nav {
+        align-items: center;
+        width: 100%;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+
+    .page-link {
+        min-width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .page-item:first-child .page-link,
+    .page-item:last-child .page-link {
+        min-width: 82px;
+    }
 }
 
 /* MODALES DETALLE & FORMULARIOS */
@@ -736,6 +856,150 @@
     font-size: 11.5px;
     color: #94a3b8;
     margin-top: 2px;
+}
+
+.doctor-assignment {
+    gap: 8px;
+}
+
+.doctor-assignment-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.doctor-selection-count {
+    color: var(--primary);
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.doctor-assignment-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.doctor-search {
+    flex: 1;
+    min-width: 180px;
+    padding-block: 8px;
+    font-size: 12px;
+}
+
+.doctor-assignment-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+}
+
+.doctor-assignment-action {
+    padding: 7px 9px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.doctor-assignment-action:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.doctor-assignment-list {
+    display: grid;
+    gap: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 2px;
+}
+
+.doctor-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: #ffffff;
+    transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.doctor-option[hidden] {
+    display: none;
+}
+
+.doctor-option.is-selected {
+    border-color: #93c5fd;
+    background: #f8fbff;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.06);
+}
+
+.doctor-option-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+    cursor: pointer;
+}
+
+.doctor-option-select input,
+.doctor-principal-choice input {
+    accent-color: var(--primary);
+    flex: 0 0 auto;
+}
+
+.doctor-option-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+}
+
+.doctor-option-details strong {
+    overflow: hidden;
+    color: var(--text-main);
+    font-size: 12.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doctor-option-details small {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.doctor-principal-choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.doctor-principal-choice input:disabled {
+    cursor: not-allowed;
+}
+
+.doctor-assignment-empty {
+    margin: 0;
+    padding: 12px;
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-size: 12px;
 }
 
 .modal-footer {
@@ -820,6 +1084,30 @@
     font-size: 14px;
     color: var(--text-main);
     font-weight: 500;
+}
+
+@media (max-width: 520px) {
+    .doctor-assignment-tools {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .doctor-search {
+        width: 100%;
+    }
+
+    .doctor-assignment-actions {
+        justify-content: flex-end;
+    }
+
+    .doctor-option {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .doctor-principal-choice {
+        padding-left: 26px;
+    }
 }
 
 /* Opciones de Eliminación */

@@ -46,7 +46,7 @@ class MobileApiTest extends TestCase
             'telefono_emergencia'   => '5551234567',
             'sexo'                  => 'Masculino',
             'estatura'              => 1.75,
-            'diagnostico_principal' => 'Hipertensión Arterial Grado 1',
+            'diagnostico_principal' => 'Hipertensión',
         ];
 
         $response = $this->postJson('/api/v1/auth/register-paciente', $payload);
@@ -74,6 +74,25 @@ class MobileApiTest extends TestCase
         ]);
     }
 
+    public function test_registro_rechaza_diagnosticos_fuera_del_catalogo(): void
+    {
+        $response = $this->postJson('/api/v1/auth/register-paciente', [
+            'primer_nombre'         => 'Lucía',
+            'apellido_paterno'      => 'López',
+            'email'                 => 'paciente_diagnostico_' . time() . '@example.com',
+            'password'              => 'password123',
+            'password_confirmation' => 'password123',
+            'fecha_nacimiento'      => '1985-06-15',
+            'telefono_emergencia'   => '5551234567',
+            'sexo'                  => 'Femenino',
+            'estatura'              => 1.65,
+            'diagnostico_principal' => 'Asma',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors('diagnostico_principal');
+    }
+
     /**
      * Test de login y registro de métrica con token Sanctum.
      */
@@ -92,7 +111,7 @@ class MobileApiTest extends TestCase
             'telefono_emergencia'   => '5559876543',
             'sexo'                  => 'Femenino',
             'estatura'              => 1.62,
-            'diagnostico_principal' => 'Diabetes Mellitus Tipo 2',
+            'diagnostico_principal' => 'Diabetes tipo 2',
         ]);
 
         $regResponse->assertStatus(201);

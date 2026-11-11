@@ -33,4 +33,10 @@
     <div class="doctors-grid-modern">
         @include('admin.partials.medicos.card')
     </div>
+
+    @if($medicos->hasPages())
+        <div class="pagination-container">
+            {{ $medicos->withQueryString()->links('pagination::bootstrap-5') }}
+        </div>
+    @endif
 </div>
