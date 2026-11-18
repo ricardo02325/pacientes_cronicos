@@ -89,12 +89,23 @@
                 </div>
 
                 <div class="form-grid-2">
+                    <div class="form-group-custom" style="grid-column: span 2;">
+                        <label class="modal-label" for="diagnostico_principal">Diagnóstico Principal / Condición Crónica <span class="required-star">*</span></label>
+                        <select id="diagnostico_principal" name="diagnostico_principal" class="modal-select" required>
+                            <option value="" disabled selected hidden>Selecciona una condición...</option>
+                            <option value="Hipertensión" data-diagnostico>Hipertensión</option>
+                            <option value="Diabetes tipo 2" data-diagnostico>Diabetes tipo 2</option>
+                            <option value="Obesidad" data-diagnostico>Obesidad</option>
+                        </select>
+                        <span class="field-hint" id="createDiagnosisHint">Elige el diagnóstico para filtrar los médicos compatibles.</span>
+                    </div>
+
                     <div class="form-group-custom doctor-assignment" style="grid-column: span 2;">
                         <div class="doctor-assignment-heading">
                             <span class="modal-label">Médicos asignados <span class="required-star">*</span></span>
                             <span class="doctor-selection-count" id="createDoctorSelectionCount">0 seleccionados</span>
                         </div>
-                        <span class="field-hint">Selecciona uno o varios médicos y marca cuál será el principal.</span>
+                        <span class="field-hint">Elige un diagnóstico para ver los médicos compatibles; se sugieren primero los de menor carga.</span>
                         <div class="doctor-assignment-tools">
                             <input type="search" id="createDoctorSearch" class="modal-input doctor-search" placeholder="Buscar por nombre o especialidad" autocomplete="off">
                             <div class="doctor-assignment-actions">
@@ -103,13 +114,23 @@
                             </div>
                         </div>
                         <div class="doctor-assignment-list" id="createDoctorAssignmentList">
+                            <p class="doctor-assignment-empty" id="createDoctorFilterEmpty">Selecciona un diagnóstico para ver médicos compatibles.</p>
                             @forelse($medicos ?? [] as $doc)
-                                <div class="doctor-option">
+                                <div class="doctor-option" data-diagnosticos="{{ json_encode($doc->diagnosticos_disponibles) }}" data-pacientes="{{ $doc->pacientes_count }}" hidden>
                                     <label class="doctor-option-select" for="create_doctor_{{ $doc->id }}">
                                         <input type="checkbox" class="doctor-assignment-checkbox" id="create_doctor_{{ $doc->id }}" name="medico_ids[]" value="{{ $doc->id }}">
                                         <span class="doctor-option-details">
-                                            <strong>Dr(a). {{ $doc->nombre_completo }}</strong>
+                                            <span class="doctor-option-name">
+                                                <strong>Dr(a). {{ $doc->nombre_completo }}</strong>
+                                                <span class="doctor-load-badge" hidden>Menor carga</span>
+                                            </span>
                                             <small>{{ $doc->especialidad }} · {{ $doc->turno }} · {{ $doc->estado }}</small>
+                                            <span class="doctor-load-indicator">
+                                                <span>{{ $doc->pacientes_count }} {{ $doc->pacientes_count === 1 ? 'paciente' : 'pacientes' }} asignados</span>
+                                                <span class="doctor-load-track" aria-hidden="true">
+                                                    <span style="width: {{ $maxPacientesAsignados > 0 ? round(($doc->pacientes_count / $maxPacientesAsignados) * 100) : 0 }}%"></span>
+                                                </span>
+                                            </span>
                                         </span>
                                     </label>
                                     <label class="doctor-principal-choice">
@@ -137,16 +158,6 @@
                         </select>
                     </div>
 
-                    <div class="form-group-custom" style="grid-column: span 2;">
-                        <label class="modal-label" for="diagnostico_principal">Diagnóstico Principal / Condición Crónica <span class="required-star">*</span></label>
-                        <select id="diagnostico_principal" name="diagnostico_principal" class="modal-select" required>
-                            <option value="" disabled selected hidden>Selecciona una condición...</option>
-                            <option value="Hipertensión">Hipertensión</option>
-                            <option value="Diabetes tipo 2">Diabetes tipo 2</option>
-                            <option value="Obesidad">Obesidad</option>
-                        </select>
-                        <span class="field-hint">Elige la condición crónica principal del paciente.</span>
-                    </div>
                 </div>
             </div>
 

@@ -80,7 +80,12 @@
 
                     <div class="form-group-custom">
                         <label class="modal-label" for="doc_especialidad">Especialidad Médica <span class="required-star">*</span></label>
-                        <input type="text" id="doc_especialidad" name="especialidad" class="modal-input" placeholder="Ej. Medicina Interna, Cardiología..." maxlength="100" required>
+                        <select id="doc_especialidad" name="especialidad" class="modal-select" required>
+                            <option value="" disabled selected>Selecciona una especialidad...</option>
+                            @foreach(\App\Models\Medico::ESPECIALIDADES as $especialidad)
+                                <option value="{{ $especialidad }}">{{ $especialidad }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="form-group-custom">

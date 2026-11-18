@@ -965,6 +965,13 @@
     gap: 2px;
 }
 
+.doctor-option-name {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+}
+
 .doctor-option-details strong {
     overflow: hidden;
     color: var(--text-main);
@@ -973,9 +980,45 @@
     white-space: nowrap;
 }
 
+.doctor-load-badge {
+    flex: 0 0 auto;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
 .doctor-option-details small {
     color: var(--text-muted);
     font-size: 11px;
+}
+
+.doctor-load-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 3px;
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.doctor-load-track {
+    width: 76px;
+    height: 5px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.doctor-load-track > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #34d399, #f59e0b);
 }
 
 .doctor-principal-choice {

@@ -22,11 +22,11 @@
     ]
   },
   "resources/css/admin/pacientes.css": {
-    "file": "assets/pacientes-Bqn5FkQ6.css",
+    "file": "assets/pacientes-DjAa89BX.css",
     "src": "resources/css/admin/pacientes.css"
   },
   "resources/css/app.css": {
-    "file": "assets/app-D7mdSgRi.css",
+    "file": "assets/app-DTfJ6BzG.css",
     "src": "resources/css/app.css"
   },
   "resources/css/auth/login.css": {
@@ -57,7 +57,7 @@
     ]
   },
   "resources/css/medico/pacientes.css": {
-    "file": "assets/pacientes-DBZ_wx_t.css",
+    "file": "assets/pacientes-lBKCr8A2.css",
     "src": "resources/css/medico/pacientes.css",
     "isEntry": true,
     "name": "pacientes",
@@ -87,7 +87,7 @@
     "isEntry": true
   },
   "resources/js/admin/pacientes.js": {
-    "file": "assets/pacientes-DNpcyB_p.js",
+    "file": "assets/pacientes-C8j79JtU.js",
     "name": "pacientes",
     "src": "resources/js/admin/pacientes.js",
     "isEntry": true

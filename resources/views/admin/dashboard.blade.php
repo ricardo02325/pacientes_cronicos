@@ -22,10 +22,6 @@
                 <i class="fa-solid fa-hospital-user"></i>
                 <span>Gestionar Pacientes</span>
             </a>
-            <a href="{{ route('admin.medicos') }}" class="btn-secondary">
-                <i class="fa-solid fa-user-doctor"></i>
-                <span>Gestionar Médicos</span>
-            </a>
         </div>
     </div>
 

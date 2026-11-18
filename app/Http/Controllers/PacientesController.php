@@ -59,9 +59,19 @@ class PacientesController extends Controller
 
         // Médicos disponibles para asignación
         $medicos = Medico::with('usuario')
+            ->withCount('pacientes')
             ->whereHas('usuario')
+            ->orderBy('pacientes_count')
             ->orderBy('id')
             ->get();
+        $medicos->each(function (Medico $medico) {
+            $medico->setAttribute(
+                'diagnosticos_disponibles',
+                Medico::diagnosticosParaEspecialidad($medico->especialidad)
+            );
+        });
+        $menorCargaMedica = $medicos->min('pacientes_count');
+        $maxPacientesAsignados = $medicos->max('pacientes_count') ?? 0;
 
         return view('admin.pacientes', compact(
             'pacientes',
@@ -69,7 +79,9 @@ class PacientesController extends Controller
             'totalAltoRiesgo',
             'totalMedioRiesgo',
             'totalEstables',
-            'medicos'
+            'medicos',
+            'menorCargaMedica',
+            'maxPacientesAsignados'
         ));
     }
 
@@ -78,6 +90,10 @@ class PacientesController extends Controller
      */
     public function store(Request $request)
     {
+        $especialidadesPermitidas = Medico::especialidadesParaDiagnostico(
+            $request->input('diagnostico_principal')
+        );
+
         $request->validate([
             'primer_nombre' => 'required|string|max:50',
             'segundo_nombre' => 'nullable|string|max:50',
@@ -87,18 +103,23 @@ class PacientesController extends Controller
             'password' => 'nullable|string|min:6|max:255',
 
             'medico_ids' => 'required|array|min:1',
-            'medico_ids.*' => 'required|integer|distinct|exists:medicos,id',
+            'medico_ids.*' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('medicos', 'id')->whereIn('especialidad', $especialidadesPermitidas),
+            ],
             'medico_principal_id' => [
                 'required',
                 'integer',
-                'exists:medicos,id',
+                Rule::exists('medicos', 'id')->whereIn('especialidad', $especialidadesPermitidas),
                 Rule::in($request->input('medico_ids', [])),
             ],
             'fecha_nacimiento' => 'required|date',
             'telefono_emergencia' => 'required|string|max:20',
             'sexo' => 'required|string|in:Masculino,Femenino,Otro',
             'estatura' => 'nullable|numeric|between:0.5,2.5',
-            'diagnostico_principal' => 'required|in:Hipertensión,Diabetes tipo 2,Obesidad',
+            'diagnostico_principal' => ['required', Rule::in(Medico::DIAGNOSTICOS)],
             'nivel_riesgo' => 'required|in:Bajo,Medio,Alto',
         ]);
 
@@ -217,6 +238,9 @@ class PacientesController extends Controller
     {
         $paciente = Paciente::with('usuario')->findOrFail($id);
         $usuario = $paciente->usuario;
+        $especialidadesPermitidas = Medico::especialidadesParaDiagnostico(
+            $request->input('diagnostico_principal')
+        );
 
         $request->validate([
             'primer_nombre' => 'required|string|max:50',
@@ -233,18 +257,23 @@ class PacientesController extends Controller
             'estado' => 'required|in:Activo,Inactivo',
 
             'medico_ids' => 'required|array|min:1',
-            'medico_ids.*' => 'required|integer|distinct|exists:medicos,id',
+            'medico_ids.*' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('medicos', 'id')->whereIn('especialidad', $especialidadesPermitidas),
+            ],
             'medico_principal_id' => [
                 'required',
                 'integer',
-                'exists:medicos,id',
+                Rule::exists('medicos', 'id')->whereIn('especialidad', $especialidadesPermitidas),
                 Rule::in($request->input('medico_ids', [])),
             ],
             'fecha_nacimiento' => 'required|date',
             'telefono_emergencia' => 'required|string|max:20',
             'sexo' => 'required|string|in:Masculino,Femenino,Otro',
             'estatura' => 'nullable|numeric|between:0.5,2.5',
-            'diagnostico_principal' => 'required|in:Hipertensión,Diabetes tipo 2,Obesidad',
+            'diagnostico_principal' => ['required', Rule::in(Medico::DIAGNOSTICOS)],
             'nivel_riesgo' => 'required|in:Bajo,Medio,Alto',
         ]);
 

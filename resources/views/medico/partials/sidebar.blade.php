@@ -1,3 +1,4 @@
+
 <aside class="sidebar">
     <div class="logo-area">
         <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
@@ -21,20 +22,23 @@
     <nav class="nav-menu">
         <div class="nav-section-title">CONSULTORIO</div>
 
-        <a href="{{ route('medico.pacientes.index') }}" 
-           class="nav-item {{ request()->routeIs('medico.pacientes*') ? 'active' : '' }}">
+        <!-- Mis Pacientes -->
+        <a href="{{ route('medico.pacientes.index') }}"
+            class="nav-item {{ request()->routeIs('medico.pacientes.index') ? 'active' : '' }}">
             <i class="fa-solid fa-hospital-user"></i>
             <span>Mis Pacientes</span>
         </a>
 
-        <a href="{{ route('medico.reportes') }}" 
-           class="nav-item {{ request()->routeIs('medico.reportes') ? 'active' : '' }}">
+        <!-- Métricas -->
+        <a href="{{ route('medico.reportes') }}"
+            class="nav-item {{ request()->routeIs('medico.reportes') || request()->is('medico/pacientes/*') ? 'active' : '' }}">
             <i class="fa-solid fa-file-waveform"></i>
-            <span>Reportes Clínicos</span>
+            <span>Métricas</span>
         </a>
 
         <div class="nav-section-title" style="margin-top: 18px;">SESIÓN</div>
 
+        <!-- Cerrar Sesión -->
         <a href="{{ route('logout') }}" class="nav-item logout"
             onclick="event.preventDefault(); document.getElementById('logout-form-medico').submit();">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>

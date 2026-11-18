@@ -46,7 +46,7 @@ class UsuarioSeeder extends Seeder
             ['usuario_id' => $usuarioMedico->id],
             [
                 'cedula_profesional' => 'MED-984321',
-                'especialidad' => 'Medicina Interna y Cardiología',
+                'especialidad' => 'Endocrinología',
                 'telefono' => '3121234567',
                 'consultorio' => 'Consultorio 204-B',
                 'turno' => 'Matutino',

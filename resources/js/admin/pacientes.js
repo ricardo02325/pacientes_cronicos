@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const update = () => {
             const term = search?.value.trim().toLocaleLowerCase() || "";
             list.querySelectorAll(".doctor-option").forEach((option) => {
-                option.hidden = !option.textContent.toLocaleLowerCase().includes(term);
+                option.hidden = option.dataset.diagnosisMatch !== "true"
+                    || !option.textContent.toLocaleLowerCase().includes(term);
             });
 
             const selected = checkboxes().filter((checkbox) => checkbox.checked);
@@ -131,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 update();
             },
+            update,
         };
     };
 
@@ -142,10 +144,106 @@ document.addEventListener("DOMContentLoaded", () => {
         "createClearDoctors",
         "patientForm",
     );
+    const editDoctorAssignment = setupDoctorAssignment(
+        "editDoctorAssignmentList",
+        "editDoctorSelectionCount",
+        "editDoctorSearch",
+        "editSelectVisibleDoctors",
+        "editClearDoctors",
+        "editPatientForm",
+    );
+
+    const setupDiagnosisFilter = (diagnosisId, hintId, doctorListId, emptyId, assignment) => {
+        const diagnosis = document.getElementById(diagnosisId);
+        const hint = document.getElementById(hintId);
+        const doctorList = document.getElementById(doctorListId);
+        if (!diagnosis || !doctorList) return;
+        const emptyMessage = document.getElementById(emptyId);
+        const options = [...doctorList.querySelectorAll(".doctor-option")];
+
+        const update = () => {
+            const selectedDiagnosis = diagnosis.value;
+            const compatibleOptions = options.filter((option) => {
+                const diagnoses = JSON.parse(option.dataset.diagnosticos || "[]");
+                const compatible = Boolean(selectedDiagnosis) && diagnoses.includes(selectedDiagnosis);
+                option.dataset.diagnosisMatch = compatible ? "true" : "false";
+                if (!compatible) {
+                    option.querySelector(".doctor-assignment-checkbox").checked = false;
+                    const radio = option.querySelector('input[name="medico_principal_id"]');
+                    if (radio) radio.checked = false;
+                }
+                return compatible;
+            });
+
+            const lowestLoad = compatibleOptions.length
+                ? Math.min(...compatibleOptions.map((option) => Number(option.dataset.pacientes || 0)))
+                : null;
+            options.forEach((option) => {
+                const badge = option.querySelector(".doctor-load-badge");
+                if (badge) {
+                    badge.hidden = option.dataset.diagnosisMatch !== "true"
+                        || Number(option.dataset.pacientes || 0) !== lowestLoad;
+                }
+            });
+
+            assignment?.update();
+            const checkedPrincipal = doctorList.querySelector('input[name="medico_principal_id"]:checked');
+            if (selectedDiagnosis && !checkedPrincipal && compatibleOptions.length) {
+                const selectedOption = compatibleOptions.find(
+                    (option) => option.querySelector(".doctor-assignment-checkbox").checked,
+                ) || compatibleOptions[0];
+                const checkbox = selectedOption.querySelector(".doctor-assignment-checkbox");
+                const radio = selectedOption.querySelector('input[name="medico_principal_id"]');
+                checkbox.checked = true;
+                if (radio) radio.checked = true;
+                assignment?.update();
+            }
+
+            if (hint) {
+                hint.textContent = !selectedDiagnosis
+                    ? "Elige el diagnóstico para filtrar los médicos compatibles."
+                    : compatibleOptions.length
+                        ? "Médicos filtrados por diagnóstico; los de menor carga están marcados."
+                        : "No hay médicos registrados para este diagnóstico.";
+            }
+            if (emptyMessage) {
+                emptyMessage.hidden = compatibleOptions.length > 0;
+                emptyMessage.textContent = selectedDiagnosis
+                    ? "No hay médicos registrados para este diagnóstico."
+                    : "Selecciona un diagnóstico para ver médicos compatibles.";
+            }
+        };
+
+        diagnosis.addEventListener("change", update);
+        update();
+        return {
+            update,
+            reset() {
+                diagnosis.value = "";
+                update();
+            },
+        };
+    };
+
+    const createDiagnosisFilter = setupDiagnosisFilter(
+        "diagnostico_principal",
+        "createDiagnosisHint",
+        "createDoctorAssignmentList",
+        "createDoctorFilterEmpty",
+        createDoctorAssignment,
+    );
+    const editDiagnosisFilter = setupDiagnosisFilter(
+        "edit_diagnostico_principal",
+        "editDiagnosisHint",
+        "editDoctorAssignmentList",
+        "editDoctorFilterEmpty",
+        editDoctorAssignment,
+    );
 
     if (addPatientBtn && modalOverlay) {
         addPatientBtn.addEventListener("click", () => {
             createDoctorAssignment?.reset();
+            createDiagnosisFilter?.reset();
             modalOverlay.classList.remove("hidden");
         });
     }
@@ -169,14 +267,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeEditModalIcon = document.getElementById("closeEditModalIcon");
     const cancelEditModalBtn = document.getElementById("cancelEditModalBtn");
     const editPatientForm = document.getElementById("editPatientForm");
-    const editDoctorAssignment = setupDoctorAssignment(
-        "editDoctorAssignmentList",
-        "editDoctorSelectionCount",
-        "editDoctorSearch",
-        "editSelectVisibleDoctors",
-        "editClearDoctors",
-        "editPatientForm",
-    );
 
     const closeEditModal = () => {
         if (editModalOverlay) editModalOverlay.classList.add("hidden");
@@ -231,6 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("edit_estatura").value = p.estatura || "";
             document.getElementById("edit_nivel_riesgo").value = p.nivel_riesgo || "Bajo";
             document.getElementById("edit_diagnostico_principal").value = p.diagnostico_principal || "";
+            editDiagnosisFilter?.update();
             document.getElementById("edit_password").value = "";
 
             if (editModalOverlay) {

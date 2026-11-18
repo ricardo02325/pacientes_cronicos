@@ -81,7 +81,7 @@ class DoctorController extends Controller
             // Datos Médico
             'telefono' => 'required|string|max:15',
             'cedula_profesional' => 'required|string|max:30|unique:medicos,cedula_profesional',
-            'especialidad' => 'required|string|max:100',
+            'especialidad' => ['required', Rule::in(Medico::ESPECIALIDADES)],
             'turno' => 'required|in:Matutino,Vespertino,Nocturno,Mixto',
             'consultorio' => 'nullable|string|max:50',
             'observaciones' => 'nullable|string',
@@ -201,7 +201,7 @@ class DoctorController extends Controller
                 'max:30',
                 Rule::unique('medicos', 'cedula_profesional')->ignore($medico->id),
             ],
-            'especialidad' => 'required|string|max:100',
+            'especialidad' => ['required', Rule::in(Medico::ESPECIALIDADES)],
             'turno' => 'required|in:Matutino,Vespertino,Nocturno,Mixto',
             'consultorio' => 'nullable|string|max:50',
             'observaciones' => 'nullable|string',
