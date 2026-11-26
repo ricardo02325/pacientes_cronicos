@@ -9,17 +9,19 @@ use App\Models\MetricaPaciente;
 use Carbon\Carbon;
 use App\Models\Paciente;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PacienteController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Obtener el ID del médico autenticado (simulado como 1 si no tienes Auth aún)
-        $medicoId = auth()->check() ? auth()->user()->id : 10;
+        // 1. Obtener el perfil médico del usuario autenticado
+        $medico = auth()->check() ? auth()->user()->medico : null;
+        $medicoId = $medico?->id;
 
-        // 2. Query base para los pacientes de este médico
-        $queryBase = Paciente::where('medico_id', $medicoId);
+        // 2. Query base para los pacientes de este médico (o todos si no tiene filtro específico)
+        $queryBase = $medicoId ? Paciente::whereHas('medicos', fn($q) => $q->where('medicos.id', $medicoId)) : Paciente::query();
 
         // 3. Calcular Estadísticas (Clonamos la query para no afectarla)
         $stats = [
@@ -49,7 +51,7 @@ class PacienteController extends Controller
         }
 
         // 5. Obtener los resultados con sus relaciones
-        $pacientes = $queryBase->with(['usuario', 'ultimaMetrica'])->paginate(10);
+        $pacientes = $queryBase->with(['usuario', 'ultimaMetrica'])->paginate(10)->onEachSide(1)->withQueryString();
 
         // 6. Retornar a la vista con las variables
         return view('medico.pacientes', compact('stats', 'pacientes'));
@@ -58,10 +60,22 @@ class PacienteController extends Controller
     public function show($id, Request $request)
     {
         // 1. Obtener el paciente con la información de su usuario
-        $paciente = Paciente::with('usuario')->findOrFail($id);
+        $paciente = $this->obtenerPacienteDelMedico($id);
 
         // 2. Obtener el catálogo de métricas para el <select>
         $metricasDisponibles = Metrica::all();
+        $configuracionesAlertas = DB::table('paciente_metrica_alertas')
+            ->where('paciente_id', $paciente->id)
+            ->get()
+            ->keyBy('metrica_id');
+        $rangosAlertas = $metricasDisponibles->mapWithKeys(function ($metrica) use ($configuracionesAlertas) {
+            $configuracion = $configuracionesAlertas->get($metrica->id);
+
+            return [$metrica->id => [
+                'min' => $configuracion ? $configuracion->rango_min : $metrica->rango_min_normal,
+                'max' => $configuracion ? $configuracion->rango_max : $metrica->rango_max_normal,
+            ]];
+        });
 
         // 3. Obtener los filtros actuales de la URL (o valores por defecto)
         // Si no selecciona nada, por defecto mostramos la métrica 1 (Presión Sistólica)
@@ -99,8 +113,40 @@ class PacienteController extends Controller
             'fechaFin', 
             'chartLabels', 
             'chartData', 
-            'historialTabla'
+            'historialTabla',
+            'rangosAlertas'
         ));
+    }
+
+    /**
+     * Registrar una métrica para un paciente desde el panel médico.
+     */
+    public function storeMetrica(Request $request, $id)
+    {
+        $paciente = Paciente::with('usuario')->findOrFail($id);
+
+        $request->validate([
+            'tipo_metrica_id' => 'required|exists:metricas,id',
+            'valor' => 'required|numeric|between:0,9999.99',
+            'notas' => 'nullable|string|max:255',
+        ]);
+
+        MetricaPaciente::create([
+            'paciente_id' => $paciente->id,
+            'tipo_metrica_id' => $request->tipo_metrica_id,
+            'valor' => $request->valor,
+            'fecha_registro' => now(),
+            'notas' => $request->notas,
+        ]);
+
+        $metrica = Metrica::find($request->tipo_metrica_id);
+
+        return redirect()
+            ->route('medico.pacientes.show', [
+                'id' => $id,
+                'metrica_id' => $request->tipo_metrica_id,
+            ])
+            ->with('success', "Métrica '{$metrica->nombre}' registrada exitosamente para {$paciente->usuario->primer_nombre}.");
     }
 
     public function exportPDF($id, Request $request)
@@ -134,4 +180,116 @@ class PacienteController extends Controller
         $nombreArchivo = 'Reporte_' . str_replace(' ', '_', $paciente->usuario->primer_nombre) . '_' . $fechaFin . '.pdf';
         return $pdf->download($nombreArchivo);
     }
+
+    /**
+     * Centro de Reportes Clínicos y Telemetría Médica
+     */
+    public function reportes(Request $request)
+    {
+        $medico = auth()->check() ? auth()->user()->medico : null;
+        $medicoId = $medico?->id;
+
+        $queryPacientes = $medicoId ? Paciente::whereHas('medicos', fn($q) => $q->where('medicos.id', $medicoId)) : Paciente::query();
+
+        $totalPacientes = (clone $queryPacientes)->count();
+        $riesgoAlto = (clone $queryPacientes)->where('nivel_riesgo', 'Alto')->count();
+        $riesgoMedio = (clone $queryPacientes)->where('nivel_riesgo', 'Medio')->count();
+        $riesgoBajo = (clone $queryPacientes)->where('nivel_riesgo', 'Bajo')->count();
+
+        // Pacientes con sus últimas métricas para el radar clínico
+        $pacientesConMetricas = (clone $queryPacientes)
+            ->with(['usuario', 'ultimaMetrica.tipoMetrica'])
+            ->get();
+
+        // Alertas de las lecturas registradas durante los últimos 15 días.
+        $alertasRecientes = MetricaPaciente::whereHas('paciente.medicos', function($q) use ($medicoId) {
+                if ($medicoId) {
+                    $q->where('medicos.id', $medicoId);
+                }
+            })
+            ->join('pacientes as alert_patient', 'alert_patient.id', '=', 'metricas_pacientes.paciente_id')
+            ->join('metricas as alert_metric', 'alert_metric.id', '=', 'metricas_pacientes.tipo_metrica_id')
+            ->leftJoin('paciente_metrica_alertas as alert_range', function ($join) {
+                $join->on('alert_range.paciente_id', '=', 'metricas_pacientes.paciente_id')
+                    ->on('alert_range.metrica_id', '=', 'metricas_pacientes.tipo_metrica_id');
+            })
+            ->select('metricas_pacientes.*')
+            ->with(['paciente.usuario', 'tipoMetrica'])
+            ->whereBetween('metricas_pacientes.fecha_registro', [now()->subDays(15), now()])
+            ->where(function ($query) {
+                $rangoMinimo = 'CASE WHEN alert_range.id IS NULL THEN alert_metric.rango_min_normal ELSE alert_range.rango_min END';
+                $rangoMaximo = 'CASE WHEN alert_range.id IS NULL THEN alert_metric.rango_max_normal ELSE alert_range.rango_max END';
+
+                $query->where(function ($minimo) use ($rangoMinimo) {
+                    $minimo->whereRaw("$rangoMinimo IS NOT NULL")
+                        ->whereRaw("metricas_pacientes.valor < $rangoMinimo");
+                })->orWhere(function ($maximo) use ($rangoMaximo) {
+                    $maximo->whereRaw("$rangoMaximo IS NOT NULL")
+                        ->whereRaw("metricas_pacientes.valor > $rangoMaximo");
+                });
+            })
+            ->orderBy('metricas_pacientes.fecha_registro', 'desc')
+            ->limit(8)
+            ->get();
+
+        return view('medico.reportes', compact(
+            'totalPacientes',
+            'riesgoAlto',
+            'riesgoMedio',
+            'riesgoBajo',
+            'pacientesConMetricas',
+            'alertasRecientes'
+        ));
+    }
+
+    public function updateRangosAlertas(Request $request, $id)
+    {
+        $paciente = $this->obtenerPacienteDelMedico($id);
+
+        $validated = $request->validate([
+            'rangos' => ['required', 'array', 'min:1'],
+            'rangos.*.metrica_id' => ['required', 'integer', 'distinct', Rule::exists('metricas', 'id')],
+            'rangos.*.min' => ['nullable', 'numeric', 'between:0,999999.99'],
+            'rangos.*.max' => ['nullable', 'numeric', 'between:0,999999.99'],
+        ]);
+
+        foreach ($validated['rangos'] as $rango) {
+            if ($rango['min'] !== null && $rango['max'] !== null && $rango['min'] > $rango['max']) {
+                return back()
+                    ->withErrors(['rangos' => 'El límite mínimo no puede ser mayor que el máximo.'])
+                    ->withInput();
+            }
+        }
+
+        $now = now();
+        $rangos = collect($validated['rangos'])->map(fn ($rango) => [
+            'paciente_id' => $paciente->id,
+            'metrica_id' => $rango['metrica_id'],
+            'rango_min' => $rango['min'],
+            'rango_max' => $rango['max'],
+            'created_at' => $now,
+            'updated_at' => $now,
+        ])->all();
+
+        DB::table('paciente_metrica_alertas')->upsert(
+            $rangos,
+            ['paciente_id', 'metrica_id'],
+            ['rango_min', 'rango_max', 'updated_at']
+        );
+
+        return redirect()
+            ->route('medico.pacientes.show', $paciente->id)
+            ->with('success', "Los rangos de alertas para {$paciente->usuario->nombre_completo} se actualizaron correctamente.");
+    }
+
+    private function obtenerPacienteDelMedico($id): Paciente
+    {
+        $medico = auth()->user()->medico;
+        abort_unless($medico, 403, 'El usuario no tiene un perfil médico.');
+
+        return Paciente::with('usuario')
+            ->whereHas('medicos', fn ($query) => $query->where('medicos.id', $medico->id))
+            ->findOrFail($id);
+    }
 }
+

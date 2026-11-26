@@ -1,215 +1,122 @@
-<!-- MODAL NUEVO MÉDICO -->
+<!-- MODAL REGISTRAR NUEVO MÉDICO -->
 <div class="modal-overlay hidden" id="doctorModal">
-
-    <div class="modal-content">
-
+    <div class="modal-card">
         <!-- HEADER -->
         <div class="modal-header">
-
-            <h2>Nuevo Médico</h2>
-
-            <button type="button" class="btn-close" id="btnCloseModal" aria-label="Cerrar modal">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
+            <div>
+                <h3 class="modal-title"><i class="fa-solid fa-user-doctor" style="color: var(--primary); margin-right: 8px;"></i> Registrar Nuevo Médico</h3>
+                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Crea la cuenta de acceso y perfil profesional para el médico.</p>
+            </div>
+            <button type="button" class="btn-close" id="btnCloseModal" aria-label="Cerrar modal">&times;</button>
         </div>
 
         <!-- FORMULARIO -->
         <form id="doctorForm" action="{{ route('medicos.store') }}" method="POST">
-
             @csrf
 
-            <div class="form-grid">
-
-                <!-- PRIMER NOMBRE -->
-                <div class="form-group">
-
-                    <label for="primer_nombre">
-                        Primer Nombre *
-                    </label>
-
-                    <input type="text" id="primer_nombre" name="primer_nombre" class="form-control"
-                        placeholder="Primer Nombre (obligatorio)" maxlength="50" required autofocus>
+            <div class="modal-form-body">
+                <!-- Sección 1: Datos Personales -->
+                <div class="form-section-header">
+                    <span class="section-tag">1</span>
+                    <span>Datos Personales del Médico</span>
                 </div>
 
-                <!-- SEGUNDO NOMBRE -->
-                <div class="form-group">
+                <div class="form-grid-2">
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_primer_nombre">Primer Nombre <span class="required-star">*</span></label>
+                        <input type="text" id="doc_primer_nombre" name="primer_nombre" class="modal-input" placeholder="Ej. Carlos" maxlength="50" required>
+                    </div>
 
-                    <label for="segundo_nombre">
-                        Segundo Nombre
-                    </label>
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_segundo_nombre">Segundo Nombre</label>
+                        <input type="text" id="doc_segundo_nombre" name="segundo_nombre" class="modal-input" placeholder="Ej. Eduardo (opcional)" maxlength="50">
+                    </div>
 
-                    <input type="text" id="segundo_nombre" name="segundo_nombre" class="form-control"
-                        placeholder="Segundo Nombre (opcional)" maxlength="50">
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_apellido_paterno">Apellido Paterno <span class="required-star">*</span></label>
+                        <input type="text" id="doc_apellido_paterno" name="apellido_paterno" class="modal-input" placeholder="Ej. Gómez" maxlength="50" required>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_apellido_materno">Apellido Materno <span class="required-star">*</span></label>
+                        <input type="text" id="doc_apellido_materno" name="apellido_materno" class="modal-input" placeholder="Ej. Salas" maxlength="50" required>
+                    </div>
                 </div>
 
-                <!-- APELLIDO PATERNO -->
-                <div class="form-group">
-
-                    <label for="apellido_paterno">
-                        Apellido Paterno *
-                    </label>
-
-                    <input type="text" id="apellido_paterno" name="apellido_paterno" class="form-control"
-                        placeholder="Apellido Paterno (obligatorio)" maxlength="50" required>
+                <!-- Sección 2: Cuenta y Contacto -->
+                <div class="form-section-header" style="margin-top: 20px;">
+                    <span class="section-tag">2</span>
+                    <span>Credenciales de Acceso y Contacto</span>
                 </div>
 
-                <!-- APELLIDO MATERNO -->
-                <div class="form-group">
+                <div class="form-grid-2">
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_email">Correo Electrónico <span class="required-star">*</span></label>
+                        <input type="email" id="doc_email" name="email" class="modal-input" placeholder="doctor@CroniCare.com" required>
+                    </div>
 
-                    <label for="apellido_materno">
-                        Apellido Materno
-                    </label>
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_password">Contraseña de Acceso <span class="required-star">*</span></label>
+                        <input type="password" id="doc_password" name="password" class="modal-input" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                    </div>
 
-                    <input type="text" id="apellido_materno" name="apellido_materno" class="form-control"
-                        placeholder="Apellido Materno (Opcional)" maxlength="50">
+                    <div class="form-group-custom" style="grid-column: span 2;">
+                        <label class="modal-label" for="doc_telefono">Teléfono de Contacto <span class="required-star">*</span></label>
+                        <input type="tel" id="doc_telefono" name="telefono" class="modal-input" placeholder="Ej. 3121234567 (10 dígitos)" maxlength="15" required>
+                    </div>
                 </div>
 
-                <!-- EMAIL -->
-                <div class="form-group">
-
-                    <label for="email">
-                        Correo Electrónico *
-                    </label>
-
-                    <input type="email" id="email" name="email" class="form-control"
-                        placeholder="Correo Electrónico (obligatorio)" maxlength="50" required>
+                <!-- Sección 3: Datos Laborales y Profesionales -->
+                <div class="form-section-header" style="margin-top: 20px;">
+                    <span class="section-tag">3</span>
+                    <span>Información Profesional y Asignación</span>
                 </div>
 
-                <!-- TELÉFONO -->
-                <div class="form-group">
+                <div class="form-grid-2">
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_cedula">Cédula Profesional <span class="required-star">*</span></label>
+                        <input type="text" id="doc_cedula" name="cedula_profesional" class="modal-input" placeholder="Ej. MED-1234567" maxlength="30" required>
+                    </div>
 
-                    <label for="telefono">
-                        Teléfono *
-                    </label>
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_especialidad">Especialidad Médica <span class="required-star">*</span></label>
+                        <select id="doc_especialidad" name="especialidad" class="modal-select" required>
+                            <option value="" disabled selected>Selecciona una especialidad...</option>
+                            @foreach(\App\Models\Medico::ESPECIALIDADES as $especialidad)
+                                <option value="{{ $especialidad }}">{{ $especialidad }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    <input type="tel" id="telefono" name="telefono" class="form-control"
-                        placeholder="Teléfono (obligatorio)" maxlength="10" pattern="[0-9]{10}" required>
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_turno">Turno Laboral <span class="required-star">*</span></label>
+                        <select id="doc_turno" name="turno" class="modal-select" required>
+                            <option value="Matutino">Matutino (07:00 - 15:00)</option>
+                            <option value="Vespertino">Vespertino (14:00 - 21:00)</option>
+                            <option value="Nocturno">Nocturno (20:00 - 08:00)</option>
+                            <option value="Mixto">Mixto</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="modal-label" for="doc_consultorio">Consultorio Asignado</label>
+                        <input type="text" id="doc_consultorio" name="consultorio" class="modal-input" placeholder="Ej. Consultorio 204-B" maxlength="50">
+                    </div>
+
+                    <div class="form-group-custom" style="grid-column: span 2;">
+                        <label class="modal-label" for="doc_observaciones">Observaciones / Perfil</label>
+                        <textarea id="doc_observaciones" name="observaciones" class="modal-input" rows="2" placeholder="Notas sobre trayectoria, enfoque médico o notas administrativas..."></textarea>
+                    </div>
                 </div>
-
-                <!-- PASSWORD -->
-                <div class="form-group">
-
-                    <label for="password">
-                        Contraseña *
-                    </label>
-
-                    <input type="password" id="password" name="password" class="form-control"
-                        placeholder="Contraseña (obligatorio)" minlength="8" maxlength="255" required
-                        autocomplete="off">
-                </div>
-
-                <!-- CÉDULA -->
-                <div class="form-group">
-
-                    <label for="cedula_profesional">
-                        Cédula Profesional *
-                    </label>
-
-                    <input type="text" id="cedula_profesional" name="cedula_profesional" class="form-control"
-                        placeholder="Cédula Profesional (obligatorio)" maxlength="30" required>
-                </div>
-
-                <!-- TURNO -->
-                <div class="form-group">
-
-                    <label for="turno">
-                        Turno *
-                    </label>
-
-                    <select id="turno" name="turno" class="form-control" required>
-                        <option value="" selected disabled hidden>
-                            Seleccionar
-                        </option>
-
-                        <option value="Matutino">
-                            Mañana
-                        </option>
-
-                        <option value="Vespertino">
-                            Tarde
-                        </option>
-
-                        <option value="Nocturno">
-                            Noche
-                        </option>
-
-                        <option value="Mixto">
-                            Mixto
-                        </option>
-                    </select>
-                </div>
-
-                <!-- ESPECIALIDAD -->
-                <div class="form-group">
-
-                    <label for="especialidad">
-                        Especialidad *
-                    </label>
-
-                    <select id="especialidad" name="especialidad" class="form-control" required>
-                        <option value="" selected disabled hidden>
-                            Seleccionar
-                        </option>
-
-                        <option value="Endocrinología">
-                            Endocrinología
-                        </option>
-
-                        <option value="Cardiología">
-                            Cardiología
-                        </option>
-
-                        <option value="Medicina General">
-                            Medicina General
-                        </option>
-
-                        <option value="Nefrología">
-                            Nefrología
-                        </option>
-                    </select>
-                </div>
-
-                <!-- CONSULTORIO -->
-                <div class="form-group full-width">
-
-                    <label for="consultorio">
-                        Consultorio
-                    </label>
-
-                    <input type="text" id="consultorio" name="consultorio" class="form-control"
-                        placeholder="Consultorio (opcional)" maxlength="50">
-                </div>
-
-                <!-- OBSERVACIONES -->
-                <div class="form-group full-width">
-
-                    <label for="observaciones">
-                        Observaciones
-                    </label>
-
-                    <textarea id="observaciones" name="observaciones" class="form-control"
-                        placeholder="Notas u observaciones... (obligatorio)" rows="4"></textarea>
-
-                </div>
-
             </div>
 
             <!-- FOOTER -->
             <div class="modal-footer">
-
-                <button type="button" class="btn-secondary" id="btnCancelModal">
-                    Cancelar
+                <button type="button" class="btn-secondary" id="btnCancelModal">Cancelar</button>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-check"></i> Registrar Médico
                 </button>
-
-                <button type="submit" class="btn-primary" id="btnCreateDoctor">
-                    Crear Médico
-                </button>
-
             </div>
-
         </form>
-
     </div>
-
 </div>

@@ -27,7 +27,7 @@
 
     <table class="header-table">
         <tr>
-            <td class="logo-title">CróniCare</td>
+            <td class="logo-title">CroniCare</td>
             <td class="report-info">
                 <strong>Generado el:</strong> {{ now()->format('d/m/Y H:i') }}<br>
                 <strong>Rango evaluado:</strong> {{ \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }}
@@ -84,7 +84,7 @@
     </table>
 
     <div class="footer">
-        Este documento es un reporte electrónico emitido por la plataforma CróniCare de monitoreo clínico continuo.
+        Este documento es un reporte electrónico emitido por la plataforma CroniCare de monitoreo clínico continuo.
     </div>
 
 </body>

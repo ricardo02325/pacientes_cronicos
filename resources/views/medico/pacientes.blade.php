@@ -1,6 +1,6 @@
 @extends('medico.layouts.app')
 
-@section('title', 'Mis Pacientes')
+@section('title', 'Mis Pacientes Asignados')
 
 @push('styles')
     @vite('resources/css/medico/pacientes.css')
@@ -11,8 +11,6 @@
     @include('medico.partials.pacientes.header')
 
     @include('medico.partials.pacientes.stats')
-
-    @include('medico.partials.pacientes.filters')
 
     @include('medico.partials.pacientes.table')
 
