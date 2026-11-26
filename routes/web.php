@@ -74,6 +74,9 @@ Route::prefix('medico')
         Route::post('/pacientes/{id}/metricas', [PacienteController::class, 'storeMetrica'])
             ->name('pacientes.storeMetrica');
 
+        Route::put('/pacientes/{id}/alertas/rangos', [PacienteController::class, 'updateRangosAlertas'])
+            ->name('pacientes.alertas.rangos.update');
+
         Route::get('/pacientes/{id}/exportar-pdf', [PacienteController::class, 'exportPDF'])
             ->name('pacientes.exportPdf');
 

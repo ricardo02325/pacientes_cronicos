@@ -17,6 +17,7 @@
         </div>
 
         <div class="panel-lateral">
+            @include('medico.partials.monitoreo.alert-ranges')
             @include('medico.partials.monitoreo.export')
             @include('medico.partials.monitoreo.history')
         </div>

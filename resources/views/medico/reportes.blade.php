@@ -550,7 +550,7 @@
             </div>
 
             <p style="font-size: 12.5px; color: #64748b; margin-bottom: 16px;">
-                Lecturas automáticas que superan umbrales estándar (Glucosa &gt; 140 / Presión &ge; 140/90):
+                Lecturas de los últimos 15 días fuera de los rangos configurados para cada paciente.
             </p>
 
             <div class="alert-list-scroll">
